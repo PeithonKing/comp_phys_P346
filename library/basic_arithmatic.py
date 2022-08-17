@@ -154,6 +154,7 @@ class Matrix:
         return sum([self.mat[i][0] * mat_2.mat[i][0] for i in range(len(self.mat))])
 
 class Complex:
+    """A Class for Complex Numbers"""
     def __init__(
         self,
         real: float,
@@ -161,12 +162,27 @@ class Complex:
         name: str = "complex",
         precission: int = 16
     ):
+        """A complex number.
+
+        Args:
+            real (float): The real part of the complex number.
+            imag (float): The imaginary part of the complex number.
+            name (str, optional): The name of the Complex number; used while printing. Defaults to "complex".
+            precission (int, optional): Number of digits to be printed after the decimal point. Defaults to 16.
+        """ 
         self.real = real
         self.imag = imag
         self.name = name
         self.precission = precission
     
     def add(self, complex_2):
+        """A function to return the sum of this complex and complex_2.
+        
+        Args:
+            complex_2 (Complex): The complex number to be added to this complex number.
+            
+        Returns:
+            Complex: The sum of this complex and complex_2. """ 
         return Complex(
             self.real + complex_2.real,
             self.imag + complex_2.imag,
@@ -175,6 +191,14 @@ class Complex:
         )
     
     def multiply(self, complex_2):
+        """A function to return the product of this complex and complex_2
+
+        Args:
+            complex_2 (Complex): A complex number.
+
+        Returns:
+            Complex: A complex number representing the product of this complex and complex_2.
+        """
         return Complex(
             self.real * complex_2.real - self.imag * complex_2.imag,
             self.real * complex_2.imag + self.imag * complex_2.real,
@@ -183,9 +207,15 @@ class Complex:
         )
     
     def mod(self):
+        """mod value of this complex number.
+
+        Returns:
+            float: mod value of this complex number.
+        """
         return (self.real ** 2 + self.imag ** 2)**0.5
     
     def __str__(self):
+        """A function to return a string representation of this complex number."""
         a =  f"{self.name} = "  # {round(self.real, self.precission)}"
         if self.real:
             a += f"{round(self.real, self.precission)}"
