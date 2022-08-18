@@ -27,12 +27,17 @@ def factorial(x):
 
 class Matrix:
     """A Class for Matrix"""
-    def __init__(self, mat: list, name: str = "matrix", precission: int = 16):
+    def __init__(
+        self,
+        mat: list,
+        name: str = None,
+        precission: int = 16
+        ):
         """Initialize the matrix
 
         Args:
             mat (2D list): The matrix
-            name (string): The name of the matrix; used while printing.
+            name (string, optional): The name of the matrix; used while printing.
             precission (int, optional): The number of decimal places to be printed. Defaults to 16.
         """
         self.mat = mat
@@ -47,12 +52,16 @@ class Matrix:
             string: Returns the matrix in string format.
         """
         ret = f"{self.name} = "
+        t = " "*len(ret)
+        ret += "|"
         for row in self.mat:
-            ret += "\t|"
             for element in row:
+                if element%1 == 0:
+                    element = int(element)
                 ret += f"{round(element, self.precission)}\t"
-            ret += "|\n"
-        return ret
+            ret += f"|\n{t}|"
+            # ret += f"{t}|"
+        return ret[:-len(t)-1]
     
     def row(self, i: int):
         """Returns the ith row of the matrix.
@@ -68,7 +77,7 @@ class Matrix:
         Args:
             i (int): the column index.
         """
-        return [round(row[i], self.precission) for row in self.mat]
+        return Matrix([[round(row[i], self.precission)] for row in self.mat], f"{self.name}[:,{i}]", precission = self.precission)
 
     def swap_rows(self, i: int, j: int):
         """swaps two rows of the matrix.
@@ -157,16 +166,16 @@ class Complex:
     """A Class for Complex Numbers"""
     def __init__(
         self,
-        real: float,
-        imag: float,
-        name: str = "complex",
+        real: float = 0,
+        imag: float = 0,
+        name: str = None,
         precission: int = 16
     ):
         """A complex number.
 
         Args:
-            real (float): The real part of the complex number.
-            imag (float): The imaginary part of the complex number.
+            real (float): The real part of the complex number. Defaults to 0.
+            imag (float): The imaginary part of the complex number. Defaults to 0.
             name (str, optional): The name of the Complex number; used while printing. Defaults to "complex".
             precission (int, optional): Number of digits to be printed after the decimal point. Defaults to 16.
         """ 
@@ -214,13 +223,19 @@ class Complex:
         """
         return (self.real ** 2 + self.imag ** 2)**0.5
     
-    def __str__(self):
+    def __str__(self, name = True):
         """A function to return a string representation of this complex number."""
-        a =  f"{self.name} = "  # {round(self.real, self.precission)}"
+        a = ""
+        if name and self.name:
+            a +=  f"{self.name} = "
         if self.real:
             a += f"{round(self.real, self.precission)}"
             if self.imag:
                 a += " + "
         if self.imag:
             a += f"{round(self.imag, self.precission)}i"
+        if a == "":
+            return "0 + 0i"
+        if a == f"{self.name} = ":
+            return f"{self.name} = 0 + 0i"
         return a
