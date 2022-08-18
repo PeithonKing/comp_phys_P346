@@ -18,7 +18,7 @@
 
 1. **Step 1:** Clone the repository
 
- ```bash
+    ```bash
     git clone https://github.com/PeithonKing/comp_phys_P346.git
     ```
 
@@ -29,7 +29,7 @@
 
 3. **Step 3:** Make a virtual environment
     ```bash
- python3 -m vitualenv venv
+    python3 -m vitualenv venv
     ```
 
     if you don't have virtualenv installed, you can install it by
@@ -38,18 +38,18 @@
     ```
 
 4. **Step 4:** Activate the virtual environment
-    * in Linux/MacOS:
-    ```bash
-    source venv/bin/activate
-    ```
     * in Windows:
     ```bash
     venv\Scripts\activate
     ```
+    * in Linux/MacOS:
+    ```bash
+    source venv/bin/activate
+    ```
 
 5. **Step 5:** Install all the packages
 
- ```bash
+    ```bash
     pip install -r requirements.txt
     ```
 
