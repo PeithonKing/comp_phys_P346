@@ -14,7 +14,7 @@
 
 ## Deployment (How to run codes in this repository)
 
-&emsp; Hope you have Python Installed. I have used Python 3.9.13 version which is easily available in the windows store. If not, you can install it from [this](https://www.python.org/downloads/release/python-390/) link.
+&emsp; Hope you have Python and Git Installed. I have used Python 3.9.13 version which is easily available in the windows store. If not, you can install it from [this](https://www.python.org/downloads/release/python-390/) link. My Git version is **2.30.1.windows.1**.
 
 1. **Step 1:** Clone the repository
 

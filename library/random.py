@@ -26,4 +26,4 @@ def LCG(seed, a = 1103515245, c = 12345, m = 32768):  # LCG
     Returns:
         float: a random number between 0 and 1.
     """
-    return ((a * seed + c) % m) / m
+    return ((a * seed + c) % m) / m 

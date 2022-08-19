@@ -25,6 +25,13 @@ def factorial(x):
     else:
         return x * factorial(x - 1)
 
+def distance(x, y):
+    if len(x) != len(y):
+        raise ValueError("x and y must be of same length")
+    s = [(x[i]-y[i])**2 for i in range(len(x))]
+    return sum(s)**0.5
+        
+
 class Matrix:
     """A Class for Matrix"""
     def __init__(
