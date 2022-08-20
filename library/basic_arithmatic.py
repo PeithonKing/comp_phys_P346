@@ -25,12 +25,34 @@ def factorial(x):
     else:
         return x * factorial(x - 1)
 
-def distance(x, y):
-    if len(x) != len(y):
-        raise ValueError("x and y must be of same length")
-    s = [(x[i]-y[i])**2 for i in range(len(x))]
+def distance(a, b):
+    """Calculate the distance between two points on N dimensionlist.
+
+    Args:
+        a (list): the first point.
+        b (list): the second point. length of a and b must be same.
+
+    Raises:
+        ValueError: if the length of a and b are not same.
+
+    Returns:
+        float: the distance between the two points.
+    """
+    if len(a) != len(b):
+        raise ValueError("a and b must be of same length")
+    s = [(a[i]-b[i])**2 for i in range(len(a))]
     return sum(s)**0.5
-        
+
+def RMS(x):
+    """Calculate the Root Mean Square of the list x.
+
+    Args:
+        x (list): the list whose RMS is to be calculated.
+
+    Returns:
+        float: the RMS of the list x.
+    """
+    return (sum([i**2 for i in x])/len(x))**0.5
 
 class Matrix:
     """A Class for Matrix"""
