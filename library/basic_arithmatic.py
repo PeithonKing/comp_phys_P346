@@ -74,12 +74,14 @@ class Matrix:
         self.precision = precision
         self.shape = [len(mat), len(mat[0])]
 
-    def __str__(self):
+    def __str__(self, precision: int = None):
         """Prints the matrix.
 
         Returns:
             string: Returns the matrix in string format.
         """
+        if not precision:
+            precision = self.precision
         ret = f"{self.name} = "
         t = " "*len(ret)
         ret += "|"
@@ -87,8 +89,9 @@ class Matrix:
             for element in row:
                 if element%1 == 0:
                     element = int(element)
-                ret += f"{round(element, self.precision)}\t"
-            ret += f"|\n{t}|"
+                j = round(element, precision)
+                ret += f"{j}{' '*(8-len(str(j)))}"
+            ret += f"\b\b\b\b\b|\n{t}|"
             # ret += f"{t}|"
         return ret[:-len(t)-1]
     
@@ -152,7 +155,7 @@ class Matrix:
             self.mat[subtract_from][k] -= self.mat[subtract][k] * scale
 
     def divide(self, i: int, n: float, verbose: bool = True):
-        """multiplies row i by n.
+        """divides row i by n.
 
         Args:
             i (int): the row index to be multiplied.
@@ -182,6 +185,65 @@ class Matrix:
             precision = 4
             )
     
+    def is_symmetric(self):
+        """Checks if the matrix is symmetric.
+
+        Returns:
+            bool: True if the matrix is symmetric, False otherwise.
+        """
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                if self.mat[i][j] != self.mat[j][i]:
+                    return False
+        return True
+        
+        
+    def T(self):
+        """Returns the transpose of the matrix.
+        
+        Returns:
+            Matrix: The transpose of this matrix.
+        """
+        return Matrix(
+                [[self.mat[i][j] for i in range(self.shape[0])] for j in range(self.shape[1])],
+                name = f"{self.name}Tᵀ",
+                precision = self.precision
+            )
+        
+    def Cholesky_Decomposition(self):
+        if self.is_symmetric():
+            n = self.shape[0]
+            matrix = self.mat
+
+            l_triag = [[0 for x in range(n)]
+                        for y in range(n)]
+
+            for i in range(n):
+                for j in range(i + 1):
+                    sum1 = 0
+                    if (j == i):
+                        for k in range(j):
+                            sum1 += l_triag[j][k]**2
+                        l_triag[j][j] = (matrix[j][j] - sum1)**0.5
+                    else:
+                        for k in range(j):
+                            sum1 += l_triag[i][k] *l_triag[j][k]
+                        if(l_triag[j][j] > 0):
+                            l_triag[i][j] = (matrix[i][j] - sum1) / l_triag[j][j]
+            ans2 = Matrix(l_triag, precision=3).T()
+            ans2.name = "U"
+            for i in range(len(l_triag)):
+                l_triag[i][i] = 1
+            
+            ans1 = Matrix(l_triag, "L", 3)
+            
+            return ans1, ans2
+    
+    # def forward_propagation(self):
+        
+        
+        
+    
     def dot(self, mat_2):
         """Dot product of this matrix and mat_2.
 
@@ -194,9 +256,7 @@ class Matrix:
         if self.shape[0] != mat_2.shape[0]:
             raise ValueError("Matrices cannot be multiplied.")
         return sum([self.mat[i][0] * mat_2.mat[i][0] for i in range(len(self.mat))])
-    
-    # def det(self):
-        
+
 
 class Complex:
     """A Class for Complex Numbers"""
