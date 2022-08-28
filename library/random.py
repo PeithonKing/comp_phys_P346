@@ -45,7 +45,7 @@ def random_walk(
         steps (int, optional): Number of steps. Defaults to 300.
         seed (float, optional): Seed of the random walk. Defaults to 0.45.
         dimension (int, optional): Random walk in how many dimentional space. We can only plot if the walk is on 2D. Defaults to 2.
-        plot (bool, optional): Whether to plot the walk or not. Defaults to True.
+        plot (bool, optional): Whether to plot the walk or not. Defaults to True if dimensions is 2 else False.
         colour (str, optional): Colour of the path plotted. Defaults to "#1f77b4".
 
     Returns:

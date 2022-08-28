@@ -211,6 +211,12 @@ class Matrix:
             )
         
     def Cholesky_Decomposition(self):
+        """Returns the Cholesky decomposition of the matrix.
+
+        Returns:
+            Matrix: Lower Triangular matrix L such that A = LLᵀ. Diagonal elements of L will be changed to 1.
+            Matrix: Upper Triangular matrix Lᵀ renamed as U. Here the diagonal elements are kept intact.
+        """
         if self.is_symmetric():
             n = self.shape[0]
             matrix = self.mat
@@ -238,6 +244,8 @@ class Matrix:
             ans1 = Matrix(l_triag, "L", 3)
             
             return ans1, ans2
+        else:
+            raise ValueError("Matrix is not symmetric. Cannot perform Cholesky decomposition.")
     
     # def forward_propagation(self):
         
