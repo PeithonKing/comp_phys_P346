@@ -26,7 +26,7 @@ def factorial(x):
         return x * factorial(x - 1)
 
 def distance(a, b):
-    """Calculate the distance between two points on N dimensionlist.
+    """Calculate the distance between two points on N dimension list.
 
     Args:
         a (list): the first point.
@@ -184,7 +184,7 @@ class Matrix:
             name = f"{self.name}×{mat_2.name}",
             precision = 4
             )
-    
+
     def is_symmetric(self):
         """Checks if the matrix is symmetric.
 
@@ -196,8 +196,7 @@ class Matrix:
                 if self.mat[i][j] != self.mat[j][i]:
                     return False
         return True
-        
-        
+
     def T(self):
         """Returns the transpose of the matrix.
         
@@ -246,12 +245,7 @@ class Matrix:
             return ans1, ans2
         else:
             raise ValueError("Matrix is not symmetric. Cannot perform Cholesky decomposition.")
-    
-    # def forward_propagation(self):
-        
-        
-        
-    
+
     def dot(self, mat_2):
         """Dot product of this matrix and mat_2.
 
@@ -264,6 +258,43 @@ class Matrix:
         if self.shape[0] != mat_2.shape[0]:
             raise ValueError("Matrices cannot be multiplied.")
         return sum([self.mat[i][0] * mat_2.mat[i][0] for i in range(len(self.mat))])
+
+    def det(self):
+        """Returns the determinant of the matrix."""
+        m = self.mat
+        #base case for 2x2 matrix
+        if len(m) == 2:
+            return m[0][0]*m[1][1]-m[0][1]*m[1][0]
+
+        determinant = 0
+        for c in range(len(m)):
+            determinant += ((-1)**c)*m[0][c]*self.minor(0, c).det()
+        return determinant
+
+    def minor(self, i,j):
+        return Matrix([row[:j] + row[j+1:] for row in (self.mat[:i]+self.mat[i+1:])])
+
+    def inverse(self):
+        determinant = self.det()
+        m = self.mat
+        #special case for 2x2 matrix:
+        # if len(m) == 2:
+        #     ret = self.T()
+        #     ret.name = f"{self.name}⁻¹"
+        #     return ret
+
+        #find matrix of cofactors
+        cofactors = []
+        for r in range(len(m)):
+            cofactorRow = []
+            for c in range(len(m)):
+                cofactorRow.append(((-1)**(r+c)) * self.minor(r, c).det())
+            cofactors.append(cofactorRow)
+        cofactors = Matrix(cofactors).T().mat
+        for r in range(len(cofactors)):
+            for c in range(len(cofactors)):
+                cofactors[r][c] = cofactors[r][c]/determinant
+        return Matrix(cofactors, f"{self.name}⁻¹")
 
 
 class Complex:

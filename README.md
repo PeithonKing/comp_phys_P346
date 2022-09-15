@@ -1,20 +1,28 @@
 # Computational Physics Lab (P346) Assignments
 
+(last updated on 16th September 2022)
+
 ## Assignments
 
 1. [**Assignment 1:** General Programming](1.assign1_gen.ipynb)
 2. [**Assignment 2:** Random Number Generation](2.assign2_rand.ipynb)
-3.
+3. 
+<!-- 3. [**Assignment 3:** Solution of Linear Equations](3.assign3_lineq.ipynb) -->
 
 ## Lab Works
 
 1. [**11th August:** Random Number Generation](lab_11_08.ipynb)
 2. [**17th August:** Gauss-Jordan Elimination](lab_17_08.ipynb)
-3.
+3. [**24th August:** LU Doolittle's and Cholesky Decomposition](lab_24_08.ipynb)
+4. [**31st August:** Gauss-Seidel Method](lab_31_08.ipynb)
+5. [**7th September:** Bisection, Regula-Falsi and Newton-Raphson Method](lab_07_09.ipynb)
+6. [**14th September:** Laguerre method and deflation](lab_14_09.ipynb)
+7. [**15th September:** Interpolation](lab_15_09.ipynb)
+8. 
 
 ## Deployment (How to run codes in this repository)
 
-&emsp; Hope you have Python and Git Installed. I have used Python 3.9.13 version which is easily available in the windows store. If not, you can install it from [this](https://www.python.org/downloads/release/python-390/) link. My Git version is **2.30.1.windows.1**.
+&emsp; Hope you have Python and Git Installed. I have used Python 3.9.13 version which is easily available in the windows store. If not, you can install it from [this](https://www.python.org/downloads/release/python-390/) link.
 
 1. **Step 1:** Clone the repository
 
