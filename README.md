@@ -1,13 +1,13 @@
 # Computational Physics Lab (P346) Assignments
 
-(last updated on 16th September 2022)
+(readme last updated on 16th September 2022)
 
 ## Assignments
 
 1. [**Assignment 1:** General Programming](1.assign1_gen.ipynb)
 2. [**Assignment 2:** Random Number Generation](2.assign2_rand.ipynb)
-3. 
-<!-- 3. [**Assignment 3:** Solution of Linear Equations](3.assign3_lineq.ipynb) -->
+3. [**Assignment 3:** Solution of Linear Equations](3.assign3_lineq.ipynb)
+4. 
 
 ## Lab Works
 
@@ -50,7 +50,7 @@
     ```bash
     venv\Scripts\activate
     ```
-    * in Linux/MacOS:
+    * in Linux / MacOS:
     ```bash
     source venv/bin/activate
     ```
@@ -70,4 +70,4 @@
     python -m notebook
     ```
 
-7. **Step 7:** Run the notebook
+7. **Step 7:** Run the notebooks
