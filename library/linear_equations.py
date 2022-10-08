@@ -1,8 +1,11 @@
 try:
     from matrix import Matrix, zeros, ones, randmat
+    from basic_functions import mysum
 except:
     from library.matrix import Matrix, zeros, ones, randmat
+    from library.basic_functions import mysum
 
+from copy import deepcopy as copy
 
 def gauss_jordan(A, B, verbose=False):
     """Perform Gauss-Jordan elimination on the augmented matrix [A|B]
@@ -17,24 +20,21 @@ def gauss_jordan(A, B, verbose=False):
     """
     A.augment(B)
     for imp in range(A.shape[0]):
-        if verbose:
-            print(f"working with row {imp}")
+        if verbose: print(f"working with row {imp}")
         if A.mat[imp][imp] == 0:
-            m = max(enumerate(A.col(imp).mat[imp:]),
-                    key=lambda x: abs(x[1][0]))[0]
+            m = max(enumerate(A.col(imp).mat[imp:]), key=lambda x: abs(x[1][0]))[0]
             A.swap_rows(imp, imp+m, verbose)
-
-        A.divide(imp, A.mat[imp][imp], verbose)
+        
+        A[imp] = A[imp] / A.mat[imp][imp]
 
         for i in range(A.shape[0]):
             if imp != i:
-                A.subtract(i, imp, A.mat[i][imp], verbose)
+                A[i] -= A[imp]*A.mat[i][imp]
 
-        if verbose:
-            print()
+        if verbose: print()  # for spacing
 
     ans = A.col(-1)
-    ans.name = "Sol"
+    ans.name = "x"
     return ans
 
 
@@ -48,15 +48,10 @@ def forward_propagation(L, B):
     Returns:
         Matrix: y matrix
     """
-    p = L.precision
-    L = L.mat
-    B = B.mat
-    y = []
-    for i in range(len(L)):
-        # if not L[i][i] == 1:
-        #     print(f"L[{i}][{i}] = {L[i][i]} != 1")
-        y.append([B[i][0] - sum([L[i][j]*y[j][0] for j in range(i)])])
-    return Matrix(y, "y", p)
+    y = zeros(B.shape, "y", B.precision)
+    for i in range(len(y)):
+        y[i, 0] = (B[i, 0] - L[i, :i] @ y[:i, 0])/L[i, i]
+    return y
 
 
 def backward_propagation(U, y):
@@ -69,14 +64,10 @@ def backward_propagation(U, y):
     Returns:
         Matrix: x matrix
     """
-    p = U.precision
-    U = U.mat
-    y = y.mat
-    x = [None for i in range(len(U))]
-    for i in range(len(U)-1, -1, -1):
-        x[i] = [(y[i][0] - sum([U[i][j]*x[j][0]
-                 for j in range(len(U)) if x[j]]))/U[i][i]]
-    return Matrix(x, "x", p)
+    x = zeros(y.shape, "x", y.precision)
+    for i in range(len(x)-1, -1, -1):
+        x[i, 0] = (y[i, 0] - U[i, i+1:] @ x[i+1:, 0])/U[i, i]
+    return x
 
 
 def LU_Decomposition(A):
@@ -86,91 +77,142 @@ def LU_Decomposition(A):
         A (Matrix): Coefficient matrix
 
     Returns:
-        Matrix, Matrix: L and U matrices
+        L (Matrix): Lower triangular matrix, with 1s on the diagonal
+        U (Matrix): Upper triangular matrix
     """
     n = A.shape[0]
     LU = A
 
     for i in range(1, n):
         for j in range(i):
+            # have to do index 0 separately because it doesn't have
+            # anything on it's left and I thought it would be a lot
+            # of work (and overdoing things) to generalise them to 0
             if j == 0:
                 LU[i, j] = LU[i, j] / LU[0, 0].mat[0][0]
             else:
                 LU[i, j] = (LU[i, j] - LU[i, :j] @ LU[:j, j]) / LU[j, j].mat[0][0]
-            # had to do index 0 separately brcause it didn't
-            # have anything on it's left and I thought it would
-            # have been a lot of work to generalise them to 0
         LU[i, i:] = LU[i, i:] - LU[i, :i] @ LU[:i, i:]
-    
+
     # Was a single matrix till now, but while returning, I'm splitting it into L and U
     LU = LU.mat
-    L = Matrix([[LU[i][j] if j<i else (1 if i==j else 0) for j in range(A.shape[1])] for i in range(A.shape[0])], "L", 3)
-    U = Matrix([[LU[i][j] if j>=i else 0 for j in range(A.shape[1])] for i in range(A.shape[0])], "U", 3)
-
+    L = Matrix([[LU[i][j] if j < i else (1 if i == j else 0) for j in range(A.shape[1])] for i in range(A.shape[0])], "L", 3)
+    U = Matrix([[LU[i][j] if j >= i else 0 for j in range(A.shape[1])]for i in range(A.shape[0])], "U", 3)
     return L, U
 
 
-def gauss_siedel_solver(A, B, x):
-    name = x.name
-    precision = x.precision
-    shape = A.shape
-    A, B, x = A.mat, B.mat, x.mat
-    x_new = []
-    for i in range(len(A)):
-        x_new.append([(B[i][0] - sum([A[i][j] * x[j][0] for j in range(shape[0]) if i != j])) / A[i][i]])
-    return Matrix(x_new, name, precision)
+def gauss_seidel(A, B, tol=1e-6, guess=None, seed=0.1, max_iter=100):
+    """Solves the system of linear equations using Gauss Siedel method.
 
-def gauss_siedel(A, B, tol = 1e-6, seed = 0.1, max_iter = 100):
-    x = randmat((A.shape[0], 1), seed,  "x")*5
-    i = -1
+    Args:
+        A (Matrix): Coefficient matrix
+        B (Matrix): Intercept matrix
+        tol (float, optional): Precision. Defaults to 1e-6.
+        guess (Matrix, optional): Initial guess. Defaults to random matrix with seed as seed.
+        seed (float, optional): Initial seed for random matrix. Defaults to 0.1.
+        max_iter (int, optional): Maximum iterations to run. Defaults to 100.
+
+    Returns:
+        x (Matrix): Solution matrix
+        i (int): Number of iterations
+    """
+    if guess:
+        if isinstance(guess, list):
+            guess = Matrix(guess, "x", B.precision)
+        elif not isinstance(guess, Matrix):
+            raise TypeError("guess must be a list or a Matrix")
+        if guess.shape != B.shape:
+            raise ValueError("Guess matrix must have the same shape as B matrix.")
+    x = guess if guess else randmat(B.shape, seed,  "x")
+    i = 0
     while True:
+        x_old = copy(x)
+        for i in range(len(x)):
+            x[i,0] = (B[i,0] - A[i,:i]@x[:i,0] - A[i, i+1:]@x_old[i+1:,0])/A.mat[i][i]
         i += 1
-        # print(i, end = " ")
-        x_old = x.mat
-        x = gauss_siedel_solver(A, B, x)
-        if sum([abs(x.mat[i][0]-x_old[i][0]) for i in range(len(x.mat))]) < tol or i > max_iter:
+        if abs(x-x_old).sum() < tol or i > max_iter:
             break
     x.name = "x"
     return x, i
 
+
+def jacobi(A, B, tol=1e-6, guess=None, seed=0.1, max_iter=100):
+    """Solves the system of linear equations using Gauss Siedel method.
+
+    Args:
+        A (Matrix): Coefficient matrix
+        B (Matrix): Intercept matrix
+        tol (float, optional): Precision. Defaults to 1e-6.
+        guess (Matrix, optional): Initial guess. Defaults to random matrix with seed as seed.
+        seed (float, optional): Initial seed for random matrix. Defaults to 0.1.
+        max_iter (int, optional): Maximum iterations to run. Defaults to 100.
+
+    Returns:
+        x (Matrix): Solution matrix
+        i (int): Number of iterations
+    """
+    D = zeros(B.shape, "C", B.precision)
+    for i in range(len(A)):
+        D[i, 0] = A[i, i]
+        A[i, i] = 0
+
+    if guess:
+        if isinstance(guess, list):
+            guess = Matrix(guess, "x", B.precision)
+        elif not isinstance(guess, Matrix):
+            raise TypeError("guess must be a list or a Matrix")
+        if guess.shape != B.shape:
+            raise ValueError("Guess matrix must have the same shape as B matrix.")
+    x = guess if guess else randmat(B.shape, seed,  "x")
+    i = 0
+    while True:
+        x_old = x
+        x = (B - A@x)/D
+        i += 1
+        if abs(x-x_old).sum() < tol or i > max_iter:
+            break
+    x.name = "x"
+    return x, i
+
+
 def Cholesky_Decomposition(A):
-        """Returns the Cholesky decomposition of the matrix.
+    """Returns the Cholesky decomposition of the matrix.
 
-        Returns:
-            Matrix: Lower Triangular matrix L such that A = LLᵀ. Diagonal elements of L will be changed to 1.
-            Matrix: Upper Triangular matrix Lᵀ renamed as U. Here the diagonal elements are kept intact.
-        """
-        if A.is_symmetric():
-            n = A.shape[0]
-            matrix = A.mat
+    Returns:
+        L (Matrix): Lower Triangular matrix L such that A = L@Lᵀ.
+    """
+    if not A.is_symmetric():
+        raise ValueError(
+            "Matrix is not symmetric: cannot perform Cholesky decomposition.")
 
-            l_triag = [[0 for x in range(n)]
-                       for y in range(n)]
+    L = zeros(A.shape, "L", A.precision)
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            if i == j:
+                L[i, i] = (A[i, i] - L[i, :i]@L[i, :i].T()).mat[0][0]**0.5
+            elif i > j:
+                L[i, j] = (A[i, j] - L[i, :i]@L[j, :i].T()) / L.mat[j][j]
+            else: break  # to save some small amount of time (and complexity)
+    return L
 
-            for i in range(n):
-                for j in range(i + 1):
-                    sum1 = 0
-                    if (j == i):
-                        for k in range(j):
-                            sum1 += l_triag[j][k]**2
-                        l_triag[j][j] = (matrix[j][j] - sum1)**0.5
-                    else:
-                        for k in range(j):
-                            sum1 += l_triag[i][k] * l_triag[j][k]
-                        if (l_triag[j][j] > 0):
-                            l_triag[i][j] = (
-                                matrix[i][j] - sum1) / l_triag[j][j]
-            ans2 = Matrix(l_triag, precision=3).T()
-            ans2.name = "U"
-            for i in range(len(l_triag)):
-                l_triag[i][i] = 1
 
-            ans1 = Matrix(l_triag, "L", 3)
+def make_diag_dominant(A, B):
+    """Makes the matrix diagonally dominant.
 
-            return ans1, ans2
-        else:
-            raise ValueError(
-                "Matrix is not symmetric. Cannot perform Cholesky decomposition.")
+    Args:
+        A (Matrix): Matrix to be made diagonally dominant
+
+    Returns:
+        Matrix: Diagonally dominant matrix
+    """
+    for i in range(len(A)):
+        # ind = index of max element of ith row
+        ind = max(enumerate(A[i].mat[0]), key=lambda x: x[1])[0]
+        if i>ind:
+            raise ValueError("Matrix cannot be made diagonally dominant.")
+        A.swap_rows(i, ind, False)
+        B.swap_rows(i, ind, False)
+    return A, B
 
 
 if __name__ == "__main__":

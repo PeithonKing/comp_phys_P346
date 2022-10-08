@@ -1,3 +1,8 @@
+try:
+    from matrix import Matrix
+except:
+    from library.matrix import Matrix
+
 def mysum(a):
     """iteratively adds all elements of a list
 

@@ -155,7 +155,7 @@ class Matrix:
         """Checks if the matrix is symmetric.
 
         Returns:
-            bool: True if the matrix is symmetric, False otherwise.
+            bool: True if the matrix is symmetric, False __owise.
         """
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
@@ -205,6 +205,25 @@ class Matrix:
     def minor(self, i, j):
         return Matrix([row[:j] + row[j+1:] for row in (self.mat[:i]+self.mat[i+1:])])
 
+    def sum(self, axis=None):
+        """Returns the sum of the matrix."""
+        if self.shape == [0, 0]:
+            return 0
+        elif self.shape == [1, 1]:
+            return self.mat[0][0]
+        if axis == 0:
+            a = [[sum(row)] for row in self.mat]
+            if len(a) == 1 and len(a[0]) == 1:
+                return a[0][0]
+            return Matrix(a, name=f"sum({self.name}, axis=0)", precision=self.precision)
+        elif axis == 1:
+            a = [[sum(col) for col in zip(*self.mat)]]
+            if len(a) == 1 and len(a[0]) == 1:
+                return a[0][0]
+            return Matrix(a, name=f"sum({self.name}, axis=1)", precision=self.precision)
+        elif axis == None:
+            return sum([sum(row) for row in self.mat])
+
     def inverse(self):
         """Returns the inverse of the matrix.
 
@@ -251,26 +270,43 @@ class Matrix:
     def __sub__(self, b):
         return self+(-b)
 
-    def __mul__(self, other, name=None):
-        if isinstance(other, Matrix):
-            if other.shape[0] == 1 and other.shape[1] == self.shape[1]:  # row matrix
-                return Matrix([[self.mat[i][j]*other.mat[0][j] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
-            if other.shape[1] == 1 and other.shape[0] == self.shape[0]:  # column matrix
-                return Matrix([[self.mat[i][j]*other.mat[i][0] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
-        elif isinstance(other, (int, float)):
-            if not name:
-                name = f"{self.name}.{other}"
-            m = copy(self.mat)
-            for i in range(len(m)):
-                for j in range(len(m[i])):
-                    m[i][j] *= other
-            return Matrix(m, name, self.precision)
+    def __mul__(self, __o, name=None):
+        if isinstance(__o, Matrix):
+            if __o.shape[0] == 1 and __o.shape[1] == self.shape[1]:  # row matrix
+                return Matrix([[self.mat[i][j]*__o.mat[0][j] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
+            if __o.shape[1] == 1 and __o.shape[0] == self.shape[0]:  # column matrix
+                return Matrix([[self.mat[i][j]*__o.mat[i][0] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
+        elif isinstance(__o, (int, float)):
+            return Matrix(
+                [
+                    [self.mat[i][j]*__o for j in range(len(self.mat[i]))]
+                        for i in range(len(self.mat))
+                ],
+                name if name else f"{self.name}.{__o}",
+                self.precision
+            )
 
-    def __matmul__(self, other): return self.matmul(other)
+    def __matmul__(self, __o): return self.matmul(__o)
     def __imul__(self, b): self = self * b
-    def __truediv__(self, b): return self * (1/b)
+
+    def __abs__(self): return Matrix([[abs(self.mat[i][j]) for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
+
+    def __truediv__(self, b):
+        if isinstance(b, Matrix):
+            if b.shape == [1, 1]:
+                return self * (1/b.mat[0][0])
+            elif b.shape == self.shape:
+                return Matrix([[self.mat[i][j]/b.mat[i][j] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
+            else:
+                raise ValueError(
+                    f"Cannot divide a matrix by a matrix with shape {b.shape}.")
+        elif isinstance(b, (int, float)):
+            return self * (1/b)
+
     def __itruediv__(self, b): self = self * (1/b)
-    def __len__(self): return self.shape[0]
+    def __len__(self): return self.shape[1] if (
+        self.shape[0] == 1 and self.shape[1] != 1) else self.shape[0]
+
     def __neg__(self): return self * -1
 
     def __pow__(self, b):
@@ -298,7 +334,6 @@ class Matrix:
                     print(f"elements are different self.mat[{i}][{j}]={self.mat[i][j]} and __o.mat[{i}][{j}]={__o.mat[i][j]}")
                     return False
         return True
-            
 
     def __getitem__(self, s):
         if isinstance(s, tuple) and len(s) > len(self.shape):
