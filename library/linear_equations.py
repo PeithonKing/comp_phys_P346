@@ -91,7 +91,7 @@ def LU_Decomposition(A):
             if j == 0:
                 LU[i, j] = LU[i, j] / LU[0, 0].mat[0][0]
             else:
-                LU[i, j] = (LU[i, j] - LU[i, :j] @ LU[:j, j]) / LU[j, j].mat[0][0]
+                LU[i, j] = (LU[i, j] - LU[i, :j] @ LU[:j, j]) / LU[j, j]
         LU[i, i:] = LU[i, i:] - LU[i, :i] @ LU[:i, i:]
 
     # Was a single matrix till now, but while returning, I'm splitting it into L and U
@@ -128,7 +128,7 @@ def gauss_seidel(A, B, tol=1e-6, guess=None, seed=0.1, max_iter=100):
     while True:
         x_old = copy(x)
         for i in range(len(x)):
-            x[i,0] = (B[i,0] - A[i,:i]@x[:i,0] - A[i, i+1:]@x_old[i+1:,0])/A.mat[i][i]
+            x[i,0] = (B[i,0] - A[i,:i]@x[:i,0] - A[i, i+1:]@x_old[i+1:,0])/A[i, i]
         i += 1
         if abs(x-x_old).sum() < tol or i > max_iter:
             break
