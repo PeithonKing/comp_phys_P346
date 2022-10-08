@@ -7,7 +7,7 @@ except:
 
 
 class Matrix:
-    """A Class for Matrix"""
+    """A Class for Matrices"""
 
     def __init__(
         self,

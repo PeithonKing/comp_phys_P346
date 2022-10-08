@@ -89,7 +89,7 @@ def LU_Decomposition(A):
             # anything on it's left and I thought it would be a lot
             # of work (and overdoing things) to generalise them to 0
             if j == 0:
-                LU[i, j] = LU[i, j] / LU[0, 0].mat[0][0]
+                LU[i, j] = LU[i, j] / LU[0, 0]
             else:
                 LU[i, j] = (LU[i, j] - LU[i, :j] @ LU[:j, j]) / LU[j, j]
         LU[i, i:] = LU[i, i:] - LU[i, :i] @ LU[:i, i:]
