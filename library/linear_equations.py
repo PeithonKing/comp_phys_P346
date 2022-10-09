@@ -7,7 +7,7 @@ except:
 
 from copy import deepcopy as copy
 
-def gauss_jordan(A, B, verbose=False):
+def gauss_jordan(A:Matrix, B:Matrix, verbose:bool=False):
     """Perform Gauss-Jordan elimination on the augmented matrix [A|B]
 
     Args:
@@ -20,20 +20,20 @@ def gauss_jordan(A, B, verbose=False):
     """
     A.augment(B)
     for imp in range(A.shape[0]):
-        if verbose: print(f"working with row {imp}")
+        print(f"working with row {imp}") if verbose else None
         if A.mat[imp][imp] == 0:
-            m = max(enumerate(A.col(imp).mat[imp:]), key=lambda x: abs(x[1][0]))[0]
-            A.swap_rows(imp, imp+m, verbose)
-        
+            try: A.pivot(imp)
+            except: raise ValueError("Can't do Gauss-Jordan")
+
         A[imp] = A[imp] / A.mat[imp][imp]
 
         for i in range(A.shape[0]):
             if imp != i:
                 A[i] -= A[imp]*A.mat[i][imp]
 
-        if verbose: print()  # for spacing
+        print() if verbose else None  # for spacing
 
-    ans = A.col(-1)
+    ans = A[:, -1]
     ans.name = "x"
     return ans
 
@@ -85,17 +85,14 @@ def LU_Decomposition(A):
 
     for i in range(1, n):
         for j in range(i):
-            # have to do index 0 separately because it doesn't have
-            # anything on it's left and I thought it would be a lot
-            # of work (and overdoing things) to generalise them to 0
-            if j == 0:
-                LU[i, j] = LU[i, j] / LU[0, 0]
-            else:
-                LU[i, j] = (LU[i, j] - LU[i, :j] @ LU[:j, j]) / LU[j, j]
+            if LU.mat[j][j] == 0:
+                try:A.pivot(j)
+                except:raise ValueError("Can't do LU decomposition")
+            LU[i, j] = (LU[i, j] - LU[i, :j] @ LU[:j, j]) / LU[j, j]
         LU[i, i:] = LU[i, i:] - LU[i, :i] @ LU[:i, i:]
 
     # Was a single matrix till now, but while returning, I'm splitting it into L and U
-    LU = LU.mat
+    LU = LU.mat  # gives us the 2D list which has the informations about the matrix elements
     L = Matrix([[LU[i][j] if j < i else (1 if i == j else 0) for j in range(A.shape[1])] for i in range(A.shape[0])], "L", 3)
     U = Matrix([[LU[i][j] if j >= i else 0 for j in range(A.shape[1])]for i in range(A.shape[0])], "U", 3)
     return L, U
@@ -189,9 +186,9 @@ def Cholesky_Decomposition(A):
     for i in range(A.shape[0]):
         for j in range(A.shape[1]):
             if i == j:
-                L[i, i] = (A[i, i] - L[i, :i]@L[i, :i].T()).mat[0][0]**0.5
+                L[i, i] = (A[i, i] - L[i,:i] @ L[i, :i].T()).mat[0][0]**0.5
             elif i > j:
-                L[i, j] = (A[i, j] - L[i, :i]@L[j, :i].T()) / L.mat[j][j]
+                L[i, j] = (A[i, j] - L[i,:i] @ L[j, :i].T()) / L.mat[j][j]
             else: break  # to save some small amount of time (and complexity)
     return L
 
@@ -208,7 +205,7 @@ def make_diag_dominant(A, B):
     for i in range(len(A)):
         # ind = index of max element of ith row
         ind = max(enumerate(A[i].mat[0]), key=lambda x: x[1])[0]
-        if i>ind:
+        if ind<i:
             raise ValueError("Matrix cannot be made diagonally dominant.")
         A.swap_rows(i, ind, False)
         B.swap_rows(i, ind, False)

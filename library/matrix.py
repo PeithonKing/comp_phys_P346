@@ -56,7 +56,6 @@ class Matrix:
             start (int): the row start index.
             end (int): the row end index.
         """
-        # print("ravan =", self.mat[start:end:step])
         return Matrix(self.mat[start:end:step], f"{self.name}[{start}:{end}:{step},:]", precision=self.precision)
 
     def col(self, start: int = None, end: int = None, step: int = None):
@@ -89,7 +88,18 @@ class Matrix:
             print(f"Swapping columns {i} and {j}")
         for k in range(self.shape[0]):
             self.mat[k][i], self.mat[k][j] = self.mat[k][j], self.mat[k][i]
+        
+    def pivot(self, i):  # We only swap ROWS during pivoting
+        """Pivots a row: Swaps a the ith row with one of the rows below i having the largest element at the ith column.
 
+        Args:
+            i (int): the row index to be pivoted
+        """
+        if i == self.shape[0]-1 or self[i:,i].sum() == 0:
+            raise Exception("Cannot be pivoted")
+        m = max(enumerate(self[i:,i].mat), key=lambda x: abs(x[1][0]))[0]
+        A.swap_rows(i, i+m)
+        
     def augment(self, mat_2):
         """appends the provided matrix to the right of this matrix.
 
@@ -336,9 +346,8 @@ class Matrix:
         return True
 
     def __getitem__(self, s):
-        if isinstance(s, tuple) and len(s) > len(self.shape):
-            raise IndexError("Too many indices.")
         if isinstance(s, int):
+            s = s%self.shape[0]
             return Matrix([self.mat[s]], f"{self.name}[{s}]", self.precision)
         if isinstance(s, slice):
             start = s.start
@@ -348,12 +357,11 @@ class Matrix:
             a.name = f"{self.name}[{print_slice(s)}]"
             return a
         if isinstance(s, tuple):
-            s1 = [s[1].start, s[1].stop, s[1].step] if isinstance(s[1], slice) else [
-                s[1], s[1]+1, 1]
-            # print(s1)
+            if len(s) > len(self.shape):
+                raise IndexError("Too many indices.")
+            s1 = [s[1].start, s[1].stop, s[1].step] if isinstance(s[1], slice) else [s[1]%self.shape[1], (s[1]%self.shape[1])+1, 1]
             a = self[s[0]].col(*s1)
-            a.name = self.name + \
-                "[" + print_slice(s[0]) + "," + print_slice(s[1]) + "]"
+            a.name = self.name + "[" + print_slice(s[0]) + "," + print_slice(s[1]) + "]"
             return a
 
     def __setitem__(self, key, value):
