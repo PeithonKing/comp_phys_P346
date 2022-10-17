@@ -1,6 +1,6 @@
 # Computational Physics Lab (P346) Assignments
 
-(readme last updated on 16th September 2022)
+(readme last updated on 12th October 2022)
 
 ## Assignments
 
@@ -18,7 +18,9 @@
 5. [**7th September:** Bisection, Regula-Falsi and Newton-Raphson Method](lab_07_09.ipynb)
 6. [**14th September:** Laguerre method and deflation](lab_14_09.ipynb)
 7. [**15th September:** Interpolation](lab_15_09.ipynb)
-8. 
+8. [**12th October:** Data fitting](lab_12_10.ipynb)
+9. [**13th October:** Numerical Integration](lab_13_10.ipynb)
+10. 
 
 ## Deployment (How to run codes in this repository)
 

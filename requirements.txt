@@ -1,3 +1,4 @@
 matplotlib==3.5.3
 tqdm==4.64.0
 notebook==6.4.12
+latexify-py==0.1.1

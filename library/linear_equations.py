@@ -127,7 +127,7 @@ def gauss_seidel(A, B, tol=1e-6, guess=None, seed=0.1, max_iter=100):
         for i in range(len(x)):
             x[i,0] = (B[i,0] - A[i,:i]@x[:i,0] - A[i, i+1:]@x_old[i+1:,0])/A[i, i]
         i += 1
-        if abs(x-x_old).sum() < tol or i > max_iter:
+        if abs(x-x_old).sum()/len(x) < tol or i > max_iter:
             break
     x.name = "x"
     return x, i
@@ -223,5 +223,5 @@ if __name__ == "__main__":
             [0, 7, -1, 5, 4, -2],
         ], "A", 3
     )
-    L = LU_Decomposition(A)
+    L, U = LU_Decomposition(A)
     print(L)

@@ -6,13 +6,14 @@ except:
     from basic_arithmatic import distance
 
 class Random:
-    def __init__(self, seed: float = 0.1):
+    def __init__(self, seed: float = 0.1, range: list = [0,1]):
         """Random number generator.
 
         Args:
             seed (float, optional): Initial Seed. Defaults to 0.1.
         """
         self.seed = seed
+        self.scale = lambda x: range[0] + x*(range[1]-range[0])
 
     def rand(self, c = 3.5):
         """A function to generate a random number by using the formula:
@@ -43,7 +44,7 @@ class Random:
             float: a random number between 0 and 1.
         """
         self.seed = (a*self.seed + c) % m
-        return self.seed / m
+        return self.scale(self.seed / m)
 
     def walk(
             self,

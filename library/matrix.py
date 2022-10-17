@@ -1,4 +1,5 @@
 from copy import deepcopy as copy
+from tqdm import tqdm
 
 try:
     from myrandom import Random
@@ -39,15 +40,22 @@ class Matrix:
         ret = f"{self.name} = "
         t = " "*len(ret)
         ret += "|"
+        spacing = 0
+        bs = 15
         for row in self.mat:
             for element in row:
-                if element % 1 == 0:
+                f = len(str(round(element, precision)))
+                if f+2>spacing:
+                    spacing = f+2
+        for row in self.mat:
+            for element in row:
+                if float(element).is_integer():
                     element = int(element)
-                j = round(element, precision)
-                ret += f"{j}{' '*(8-len(str(j)))}"
-            ret += f"\b\b\b\b\b|\n{t}|"
-            # ret += f"{t}|"
-        return ret[:-len(t)-1]
+                j = str(round(element, precision))
+                
+                ret += f"{j}{' '*(spacing-len(j))}"
+            ret += "\b"*(spacing-len(j)) + f"|\n{t}|"
+        return ret[:-(len(t)+1)]
 
     def row(self, start: int = None, end: int = None, step: int = None):
         """Returns the ith row of the matrix.
@@ -240,30 +248,31 @@ class Matrix:
         Returns:
             Matrix: The inverse of this matrix.
         """
-        determinant = self.det()
-        m = self.mat
-        # special cases
-        if len(m) == 1:
-            return Matrix([[1/m[0][0]]], f"{self.name}⁻¹", self.precision)
-        if len(m) == 2:
-            return Matrix(self.T(), f"{self.name}⁻¹", self.precision)
+        A = copy(self)
+        B = identity(self.shape[0])
+        A.augment(B)
+        for imp in range(A.shape[0]):
+            if A.mat[imp][imp] == 0:
+                try: A.pivot(imp)
+                except: raise ValueError("Can't find Inverse")
 
-        # find matrix of cofactors
-        cofactors = []
-        for r in range(len(m)):
-            cofactorRow = []
-            for c in range(len(m)):
-                cofactorRow.append(((-1)**(r+c)) * self.minor(r, c).det())
-            cofactors.append(cofactorRow)
-        cofactors = Matrix(cofactors).T().mat
-        for r in range(len(cofactors)):
-            for c in range(len(cofactors)):
-                cofactors[r][c] = cofactors[r][c]/determinant
-        return Matrix(cofactors, f"{self.name}⁻¹", self.precision)
+            A[imp] = A[imp] / A.mat[imp][imp]
+
+            for i in range(A.shape[0]):
+                if imp != i:
+                    A[i] -= A[imp]*A.mat[i][imp]
+
+        ans = A[:, len(A):]
+        ans.name = "x"
+        return ans
+
+
 
     # dunder methods:
 
     def __abs__(self): return self.det()
+    
+    def __max__(self): print("Hi!")
 
     def __add__(self, b):
         if isinstance(b, Matrix):
@@ -383,8 +392,9 @@ class Matrix:
                 return
             else:
                 raise TypeError(
-                    "Value must be a matrix or a list/tuple of lists/tuples.")
+                    f"Value must be a matrix or a list/tuple of lists/tuples. FYI: {type(value)}")
         if self.__getitem__(key).shape != value.shape:
+            print(self.__getitem__(key).shape, value.shape)
             raise ValueError("Cannot set matrix to matrix of different shape.")
         if isinstance(key, int):
             key = (slice(key, key+1, 1), slice(0, self.shape[1], 1))
@@ -431,20 +441,33 @@ def ones(shape, name=None, precision=3):
 
 
 def identity(n, name=None, precision=3):
-    return Matrix([[1 if i == j else 0 for j in range(n)] for i in range(n)], name, precision)
+    if isinstance(n, (tuple, list)):
+        raise TypeError("n must be an integer.")
+    return Matrix([[int(i == j) for j in range(n)] for i in range(n)], name, precision)
 
 
 def randmat(shape, seed=0.15, name=None, precision=3):
     r = Random(seed)
     return Matrix([[r.LCG() for j in range(shape[1])] for i in range(shape[0])], name, precision)
 
+def arange(start, end, step=1, name=None, precision=3):
+    m = [start]
+    while True:
+        start += step
+        if start >= end:
+            break
+        m.append(start)
+    return m
 
 if __name__ == "__main__":
-    A = Matrix(
-        [[1, 2, 3],
-         [4, 5, 6],
-         [7, 8, 9]], "A", 3
-    )
-    print(A)
-    A[1, 1:] = [[66, 67]]
+    
+    # A = Matrix(
+    #     [
+    #         [2, -3, 1.4],
+    #         [2.5, 1, -2],
+    #         [-0.8, 0, 3.1]
+    #     ], "A", 3
+    # ).inverse()
+    A = identity(3, "A")*5.578#.inverse()
+    A.swap_rows(0, 2)
     print(A)

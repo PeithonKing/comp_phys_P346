@@ -1,8 +1,3 @@
-try:
-    from matrix import Matrix
-except:
-    from library.matrix import Matrix
-
 def mysum(a):
     """iteratively adds all elements of a list
 
@@ -11,9 +6,12 @@ def mysum(a):
     """
     try:
         total = a[0]
-        for i in a[1:]: total += i
+        for i in a[1:]:
+            total += i
         return total
-    except: return 0
+    except:
+        return 0
+
 
 def product(a):
     """iteratively multiplies all elements of a list
@@ -21,7 +19,9 @@ def product(a):
     Args:
         a (iterable): list of numbers
     """
-    if len(a) == 0: raise Exception("Empty list, cannot calculate product")
+    if len(a) == 0:
+        raise Exception("Empty list, cannot calculate product")
     total = 1
-    for i in a: total *= i
+    for i in a:
+        total *= i
     return total
