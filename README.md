@@ -20,7 +20,11 @@
 7. [**15th September:** Interpolation](lab_15_09.ipynb)
 8. [**12th October:** Data fitting](lab_12_10.ipynb)
 9. [**13th October:** Numerical Integration](lab_13_10.ipynb)
-10. 
+
+
+## Exams
+
+ - [**Midsem Exam**](midsem.ipynb)
 
 ## Deployment (How to run codes in this repository)
 
