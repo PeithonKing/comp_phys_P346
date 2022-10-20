@@ -6,6 +6,15 @@ try:
 except:
     from library.myrandom import Random
 
+def truncate_p(var, p, form = float):
+    n = 1
+    s = str(var)+"0"*10
+    # print(s)
+    for i in s:
+        if i == '.':
+            break
+        n += 1
+    return form(s[:n+p])
 
 class Matrix:
     """A Class for Matrices"""
@@ -44,14 +53,14 @@ class Matrix:
         bs = 15
         for row in self.mat:
             for element in row:
-                f = len(str(round(element, precision)))
+                f = len(truncate_p(element, precision, str))
                 if f+2>spacing:
                     spacing = f+2
         for row in self.mat:
             for element in row:
-                if float(element).is_integer():
-                    element = int(element)
-                j = str(round(element, precision))
+                # if float(element).is_integer():
+                #     element = int(element)
+                j = truncate_p(element, precision, str)
                 
                 ret += f"{j}{' '*(spacing-len(j))}"
             ret += "\b"*(spacing-len(j)) + f"|\n{t}|"
@@ -446,7 +455,7 @@ def identity(n, name=None, precision=3):
     return Matrix([[int(i == j) for j in range(n)] for i in range(n)], name, precision)
 
 
-def randmat(shape, seed=0.15, name=None, precision=3):
+def randmat(shape, seed=0.15, name=None, precision=6):
     r = Random(seed)
     return Matrix([[r.LCG() for j in range(shape[1])] for i in range(shape[0])], name, precision)
 
@@ -458,6 +467,10 @@ def arange(start, end, step=1, name=None, precision=3):
             break
         m.append(start)
     return m
+
+def linspace(start, end, n, name=None, precision=3):
+    step = (end-start)/(n-1)
+    return arange(start, end, step, name, precision)
 
 if __name__ == "__main__":
     
