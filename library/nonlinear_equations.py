@@ -2,10 +2,10 @@ import warnings
 from math import log10
 try:
     from myrandom import Random
-    from matrix import truncate_p
+    from matrix import truncate_p, Matrix
 except ImportError:
     from library.myrandom import Random
-    from library.matrix import truncate_p
+    from library.matrix import truncate_p, Matrix
 
 
 def differentiate(f, x, epsilon = 1e-6):  # Numerical differentiation
@@ -48,7 +48,8 @@ def solve_bisection(f, guess = None, epsilon = 1e-10, delta=1e-4, rec_depth=0, v
         raise ValueError("No root in interval")
     places = int(-log10(delta))
     if verbose:
-        print(f"step={rec_depth+1}\t  a={truncate_p(a, places, str)}\tf(a)={truncate_p(f(a), places, str)}\tb={truncate_p(b, places, str)}\tf(b)={truncate_p(f(b), places, str)}")
+        x_p = [a, b][abs(f(a))>abs(f(b))]
+        print(f"step={rec_depth+1}\t  x={truncate_p(x_p, places, str)}\tf(x)={truncate_p(f(x_p), places, str)}")
     return truncate_p([a, b][abs(f(a))>abs(f(b))], places, str) if (abs(a-b) < epsilon or abs(f(a))<delta or abs(f(b))<delta) else solve_bisection(f, [a, b], epsilon, delta, rec_depth+1, verbose)
 
 def solve_regula_falsi(f, guess = None, delta=1e-2, rec_depth = 0, verbose = False):
@@ -60,7 +61,8 @@ def solve_regula_falsi(f, guess = None, delta=1e-2, rec_depth = 0, verbose = Fal
     res = [a, b][abs(f(a))>abs(f(b))]
     places = int(-log10(delta))
     if verbose:
-        print(f"step={rec_depth+1}\t  a={truncate_p(a, places, str)}\tf(a)={truncate_p(f(a), places, str)}\tb={truncate_p(b, places, str)}\tf(b)={truncate_p(f(b), places, str)}")
+        x_p = [a, b][abs(f(a))>abs(f(b))]
+        print(f"step={rec_depth+1}\t  x={truncate_p(x_p, places, str)}\tf(x)={truncate_p(f(x_p), places, str)}")
     ret = solve_regula_falsi(f, [a, b], delta, rec_depth+1, verbose) if (abs(f(a))>delta and abs(f(b))>delta)     else res
     return ret if rec_depth else truncate_p(ret, places, str)
 
@@ -111,4 +113,4 @@ def laguerre_solve(coeff, epsilon = 1e-6):
         roots.append(laguerre(coeff, 0, epsilon))
         coeff = deflation(coeff, roots[-1])
         # print()
-    return [truncate_p(root, int(-log10(epsilon))) for root in roots]
+    return Matrix([[truncate_p(root, int(-log10(epsilon)), str)] for root in roots], "a", int(-log10(epsilon)))
