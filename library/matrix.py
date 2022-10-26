@@ -7,14 +7,30 @@ except:
     from library.myrandom import Random
 
 def truncate_p(var, p, form = float):
-    n = 1
-    s = str(var)+"0"*10
-    # print(s)
-    for i in s:
-        if i == '.':
-            break
-        n += 1
-    return form(s[:n+p])
+    # print(var)
+    s = str(var)
+    if "e" not in s:
+        n = 1
+        s += "0"*20
+        # print(s)
+        for i in s:
+            if i == '.':
+                break
+            n += 1
+        return form(s[:n+p])
+    else:
+        val, ind = s.split("e")
+        ind = int(ind)
+        if ind<0:
+            val = val.replace(".", "")
+            ret = "0." + "0"*(-ind-1)
+            if val[0] == "-":
+                ret = "-" + ret + val[1:]
+            else:
+                ret += val
+            return truncate_p(ret, p, form)
+        else:
+            return "we don't support now"
 
 class Matrix:
     """A Class for Matrices"""

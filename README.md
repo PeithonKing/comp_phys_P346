@@ -1,13 +1,19 @@
 # Computational Physics Lab (P346) Assignments
 
-(readme last updated on 12th October 2022)
+(readme last updated on 26th October 2022)
 
 ## Assignments
 
 1. [**Assignment 1:** General Programming](1.assign1_gen.ipynb)
 2. [**Assignment 2:** Random Number Generation](2.assign2_rand.ipynb)
 3. [**Assignment 3:** Solution of Linear Equations](3.assign3_lineq.ipynb)
-4. 
+4. [**Assignment 4:** Roots of nonlinear equations, polynomials and data-fitting](4.assign4_rootfit.ipynb)
+5. 
+
+
+## Exams
+
+ - [**Midsem Exam**](midsem.ipynb)
 
 ## Lab Works
 
@@ -20,11 +26,8 @@
 7. [**15th September:** Interpolation](lab_15_09.ipynb)
 8. [**12th October:** Data fitting](lab_12_10.ipynb)
 9. [**13th October:** Numerical Integration](lab_13_10.ipynb)
-
-
-## Exams
-
- - [**Midsem Exam**](midsem.ipynb)
+10. [**26th October:** Monte Carlo Integration and starting ](lab_26_10.ipynb)
+11. 
 
 ## Deployment (How to run codes in this repository)
 
