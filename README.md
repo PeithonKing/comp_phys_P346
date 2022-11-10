@@ -1,6 +1,6 @@
 # Computational Physics Lab (P346) Assignments
 
-(readme last updated on 26th October 2022)
+(readme last updated on 11th November 2022)
 
 ## Assignments
 
@@ -8,12 +8,12 @@
 2. [**Assignment 2:** Random Number Generation](2.assign2_rand.ipynb)
 3. [**Assignment 3:** Solution of Linear Equations](3.assign3_lineq.ipynb)
 4. [**Assignment 4:** Roots of nonlinear equations, polynomials and data-fitting](4.assign4_rootfit.ipynb)
-5. 
-
+5. [**Assignment 5:** Numerical Integration](5.assign5_integ.ipynb)
+6.
 
 ## Exams
 
- - [**Midsem Exam**](midsem.ipynb)
+- [**Midsem Exam**](midsem.ipynb)
 
 ## Lab Works
 
@@ -26,8 +26,10 @@
 7. [**15th September:** Interpolation](lab_15_09.ipynb)
 8. [**12th October:** Data fitting](lab_12_10.ipynb)
 9. [**13th October:** Numerical Integration](lab_13_10.ipynb)
-10. [**26th October:** Monte Carlo Integration and starting ](lab_26_10.ipynb)
-11. 
+10. [**26th October:** Monte Carlo Integration](lab_26_10.ipynb)
+11. [**27th October:** Runge-Kutta Methods](lab_27_10.ipynb)
+12. [**9th November:** Partial Differential Equations](lab_9_11.ipynb)
+12.
 
 ## Deployment (How to run codes in this repository)
 
@@ -35,47 +37,56 @@
 
 1. **Step 1:** Clone the repository
 
-    ```bash
+    ```powershell
     git clone https://github.com/PeithonKing/comp_phys_P346.git
     ```
 
-2. **Step 2:** Enter the directory
-    ```bash
+2. **Step 2:** Go into the directory
+
+    ```powershell
     cd comp_phys_P346
     ```
 
 3. **Step 3:** Make a virtual environment
-    ```bash
+
+    ```powershell
     python3 -m vitualenv venv
     ```
 
-    if you don't have virtualenv installed, you can install it by
-    ```bash
+    if you don't have virtualenv installed, you can install it by the following command before doing the above command
+
+    ```powershell
     pip install virtualenv
     ```
 
 4. **Step 4:** Activate the virtual environment
-    * in Windows:
-    ```bash
+    - in Windows:
+
+    ```powershell
     venv\Scripts\activate
     ```
-    * in Linux / MacOS:
-    ```bash
+
+    - in Linux / MacOS:
+
+    ```powershell
     source venv/bin/activate
     ```
 
 5. **Step 5:** Install all the packages
 
-    ```bash
+    ```powershell
     pip install -r requirements.txt
     ```
 
 6. **Step 6:** Open the notebook
-    ```bash
+
+    ```powershell
     jupyter notebook
     ```
+
     or if jupyter is not added to the system path, you can use
-    ```bash
+
+    ```powershell
     python -m notebook
     ```
 
