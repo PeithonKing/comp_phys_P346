@@ -7,6 +7,7 @@ except:
     from library.myrandom import Random
 
 def truncate_p(var, p, form = float):
+    if isinstance(var, int): return form(var)
     # print(var)
     s = str(var)
     if "e" not in s:
