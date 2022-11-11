@@ -11,9 +11,10 @@
 5. [**Assignment 5:** Numerical Integration](5.assign5_integ.ipynb)
 6.
 
-## Exams
+## Exams and Projects
 
 - [**Midsem Exam**](midsem.ipynb)
+- [**DIY Project**](DIY.ipynb)
 
 ## Lab Works
 
@@ -29,6 +30,7 @@
 10. [**26th October:** Monte Carlo Integration](lab_26_10.ipynb)
 11. [**27th October:** Runge-Kutta Methods](lab_27_10.ipynb)
 12. [**9th November:** Partial Differential Equations](lab_9_11.ipynb)
+13. [**10th Novemmber:** Eivalues](lab_10_11.ipynb)
 12.
 
 ## Deployment (How to run codes in this repository)

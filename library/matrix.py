@@ -292,6 +292,13 @@ class Matrix:
         ans.name = "x"
         return ans
 
+    def normalise(self):
+        """Normalises the matrix.
+
+        Returns:
+            Matrix: The normalised matrix.
+        """
+        return self / ((self.T()@self).mat[0][0])**0.5
 
 
     # dunder methods:
