@@ -7,8 +7,12 @@ def show_image(array, title = None, dpi = 100, save = False, show = True):
     plt.figure(dpi = dpi, figsize = (0.3*array.shape[1]/dpi, 0.3*array.shape[0]/dpi))
     plt.axis(False)
     if title: plt.title(title)
-    if show: plt.imshow(array, cmap='gray')
-    if save!=False: plt.imsave(save, array, cmap='gray')
+    if len(array.shape) == 2:
+        if show: plt.imshow(array, cmap='gray')
+        if save!=False: plt.imsave(save, array, cmap='gray')
+    else:
+        if show: plt.imshow(array)
+        if save!=False: plt.imsave(save, array)
 
 def comp_percent(original_shape, terms):
     original_size = original_shape[0]*original_shape[1]
@@ -41,7 +45,7 @@ def scale(A):
     A = ((A-l)/(u-l)*255).astype(np.uint8)
 
 class GrayscaleImageSVD:
-    def __init__(self, location):
+    def __init__(self, location=None, A=None):
         self.location = location
         self.A = imread(location)
         if len(self.A.shape)!=2: raise ValueError("Image is not grayscale")
@@ -49,7 +53,19 @@ class GrayscaleImageSVD:
         self.S = np.diag(S)
         
     def reduce(self, terms, type = np.uint8):
-        return scale(self.U[:, :terms]@self.S[:terms, :terms]@self.V[:terms, :]).astype(type)
+        A_ = scale(self.U[:, :terms]@self.S[:terms, :terms]@self.V[:terms, :]).astype(np.uint8)
+        ratio = comp_percent(self.A.shape, terms)[1]
+        error = get_rms_error(self.A, A_)
+        return A_.astype(type), ratio, error
+    
+    def display(self, title=None, dpi=100):
+        plt.figure(dpi = dpi, figsize = (0.3*self.A.shape[1]/dpi, 0.3*self.A.shape[0]/dpi))
+        plt.axis(False)
+        if title: plt.title(title)
+        plt.imshow(self.A, cmap='gray')
+    
+    def save(self, loc):
+        plt.imsave(loc, self.A, cmap='gray')
         
 
 class ColourImageSVD:
@@ -77,8 +93,26 @@ class ColourImageSVD:
         self.BU, self.BS, self.BV = U, S, V
 
     def reduce(self, terms, type = np.uint8):
-        R = scale(self.RU[:, :terms]@self.RS[:terms, :terms]@self.RV[:terms, :])
-        G = scale(self.GU[:, :terms]@self.GS[:terms, :terms]@self.GV[:terms, :])
-        B = scale(self.BU[:, :terms]@self.BS[:terms, :terms]@self.BV[:terms, :])
-        return np.dstack((R, G, B)).astype(type)
+        R_ = scale(self.RU[:, :terms]@self.RS[:terms, :terms]@self.RV[:terms, :]).astype(np.uint8)
+        ratio = comp_percent(self.R.shape, terms)[1]
+        errorR = get_rms_error(self.R, R_)
+
+        G_ = scale(self.GU[:, :terms]@self.GS[:terms, :terms]@self.GV[:terms, :]).astype(np.uint8)
+        errorG = get_rms_error(self.G, G_)
+
+        B_ = scale(self.BU[:, :terms]@self.BS[:terms, :terms]@self.BV[:terms, :]).astype(np.uint8)
+        errorB = get_rms_error(self.B, B_)
+
+        error = (errorR+errorG+errorB)/3
+        
+        return np.dstack((R_, G_, B_)).astype(type), ratio, error
     
+    def display(self, title=None, dpi=100):
+        plt.figure(dpi = dpi, figsize = (0.3*self.A.shape[1]/dpi, 0.3*self.A.shape[0]/dpi))
+        plt.axis(False)
+        if title: plt.title(title)
+        plt.imshow(self.A)
+    
+    def save(self, loc):
+        plt.imsave(loc, self.A)
+
