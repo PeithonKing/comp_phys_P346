@@ -1,0 +1,77 @@
+\section{Singular Value Decomposition (SVD)}
+
+	Singular Value Decomposition (SVD) is a method of factorising a matrix $A$ (say) into three of its components.
+
+	$$A_{n\times n} = U_{n\times n}\cdot S_{n\times n}\cdot V_{n\times n}$$
+
+	$S$ is a diagonal matrix with all non-diagonal elements zero. The diagonal elements of $S$ are called the \textbf{singular values} of $A$. The columns of $U$ and $V$ are called the \textbf{left and right singular vectors} of $A$ respectively.
+
+	Here, $U$ and $V$ are unitary matrices and $S$ is a diagonal matrix. The diagonal elements of $S$ are called the singular values of $A$. The columns of $U$ are called the left singular vectors of $A$ and the columns of $V$ are called the right singular vectors of $A$. The singular values of $A$ are the square roots of the eigenvalues of $A^*A$ and $A A^*$.
+
+	Note that $S$ is a diagonal matrix with all non-diagonal elements zero. So, we we can write $S$ as a vector of singular values $\sigma_i$.
+
+	\subsection{Building the Intuition}
+
+		Let us start by having an intuitive idea of what we are trying to achieve. Consider this matrix:
+
+		$$
+		A_{4\times4} = 
+		\left(
+		\begin{matrix}
+			1 & 2 & 3 & 4\\
+			2 & 4 & 6 & 8\\
+			5 & 10 & 15 & 20\\
+			10 & 20 & 30 & 40\\
+		\end{matrix}
+		\right)
+		$$
+
+		This is a ($4\times4$) matrix. So it seems like, we need $(4\times4 = )$ 16 memory units to store the entire matrix in its true form. 
+		
+		On the other hand, we can clearly see that this matrix can be writen in a slightly different way:
+
+		$$
+		\left(
+		\begin{matrix}
+			1 & 2 & 3 & 4\\
+			2 & 4 & 6 & 8\\
+			5 & 10 & 15 & 20\\
+			10 & 20 & 30 & 40\\
+		\end{matrix}
+		\right)=
+		\left(
+			\begin{matrix}
+				1\\
+				2\\
+				5\\
+				10\\
+			\end{matrix}
+		\right)\times
+		\left(
+			\begin{matrix}
+				1 & 2 & 3 & 4\\
+			\end{matrix}
+		\right)
+		$$
+
+		So, instead of storing the actual matrix, if we store these two matrices we won't need 16 memory units, only $8$ will be sufficient. So, we have reduced the memory requirement by a factor of $2$. Now, this was just a $4\times4$ matrix, imagine if we can express a $1000\times1000$ matrix (which was supposed to take $10^6$ memory units) as a product of a row and a column matrix, we can store it using only $2000$ units of memory ($500$ times reduction in size). This is what we are trying to achieve in this project.
+
+		Now obviously we won't always be fortunate enough to get a matrix which can be expressed as a product of a row and a column matrix, but it can be proved that for any matrix $A_{n\times n}$ we can always express it like this:
+
+		$$A_{n\times n} = \sum_{i=1}^n (\sigma_iC_i\times R_i)$$
+
+		Here, $\sigma_i$ is a real number (where $\sigma_a>\sigma_b$ if $a<b$). $C_i$ and $R_i$ are column and row matrices respectively of sizes $n$.
+
+		Now, according to the theory, we need $n$ terms to express a $n\times n$ matrix. But, in practical scenario, we can get away with much less terms. This is because, as the values of $\sigma_i$ decrease, the contribution of the corresponding term to the matrix $A$ also decreases.
+
+% <!-- ## Choosing the number of terms
+% &emsp; Let us choose a **compression factor** $\alpha$ (say, where $0<\alpha<1$) before compression. Then we can keep on adding the $i^{th}$ term untill 
+
+% $$\sum_{j=1}^i\sigma_j\geq\alpha\sum_{j=1}^n\sigma_j$$
+
+% **Note:** We know that $\sigma_a>\sigma_b$ if $a<b$ so this scheme will always choose the terms with the highest singular values. We also know that all the $\sigma s$ are non-negative. -->
+
+% ## Now let's see how it works:
+% ### We will first try our hands upon a grayscale image
+
+% Grayscale images are images in which every pixel has a single brightness value. So it is easier to work with.

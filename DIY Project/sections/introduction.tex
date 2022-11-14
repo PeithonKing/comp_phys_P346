@@ -1,0 +1,7 @@
+\section{Introduction}
+
+	We work a lot with images in our daily life. We use them for various purposes like storing memories, sharing them with our friends and family, etc. But, the problem is that images are very large in size. For example, a 1080p uncompressed colour image is around 6 MB\footnote{A 1080p image is 1920x1080 pixels. Each pixel has 3 values (RGB). Considering this as an 8 bit (= 1 byte) image: $$(1920\times1080\times3) Bytes = 6220800 Bytes \approx 6 MB $$} in size. So, if we want to store a lot of images, we need a lot of storage space. Moreover, larger images will be read slower from the disk and any operations done on it will be slower too. Can we avoid this? Is there a way to store the same 6 MB image in a smaller space? In this project, we will discuss how we can compress images and store them in a smaller space using the singular value decomposition (SVD) method.
+
+	\vspace{2mm}
+
+	The SVD is a factorization of a real or complex matrices. It is widely used in numerical linear algebra, and is one of the most important matrix factorizations. The SVD is used to solve a wide range of problems in science, engineering, and mathematics. It is also used in \textbf{image compression}, recommender systems, and in numerical methods for solving partial differential equations. We will learn how to use SVD to compress image data with no or very small loss in quality.
