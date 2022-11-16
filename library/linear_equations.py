@@ -33,7 +33,7 @@ def gauss_jordan(A:Matrix, B:Matrix, verbose:bool=False):
 
         print() if verbose else None  # for spacing
 
-    ans = A[:, -1]
+    ans = A#[:, -1]
     ans.name = "x"
     return ans
 

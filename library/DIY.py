@@ -1,18 +1,33 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.image import imread
+import numpy.linalg as LA
+
+
+def SVD(A):
+    e_val, e_vec = LA.eig(A.T@A)
+    print(f"{e_val = }")
+    print(f"{e_vec = }")
+    V = e_vec
+    S = (e_val*e_val)**0.25
+    U = A@(e_vec/S)
+    return U, S, V.T
+
+# from numpy.linalg import svd as SVD
 
 # Defining function to show image
-def show_image(array, title = None, dpi = 100, save = False, show = True):
-    plt.figure(dpi = dpi, figsize = (0.3*array.shape[1]/dpi, 0.3*array.shape[0]/dpi))
+def show_image(array, title = None, dpi = 100, save = False):
+    fig = plt.figure(dpi = dpi, figsize = (0.3*array.shape[1]/dpi, 0.3*array.shape[0]/dpi))
     plt.axis(False)
-    if title: plt.title(title)
+    if title:
+        plt.title(title)
     if len(array.shape) == 2:
-        if show: plt.imshow(array, cmap='gray')
+        plt.imshow(array, cmap='gray')
         if save!=False: plt.imsave(save, array, cmap='gray')
     else:
-        if show: plt.imshow(array)
+        plt.imshow(array)
         if save!=False: plt.imsave(save, array)
+    return fig
 
 def comp_percent(original_shape, terms):
     original_size = original_shape[0]*original_shape[1]
@@ -34,7 +49,7 @@ def get_image(terms, U, S, V, A):
     return A_, comp, rms_error, text
 
 def reduce(terms, A):
-    U, S, V = np.linalg.svd(A)
+    U, S, V = SVD(A)
     S = np.diag(S)
     return U[:, :terms]@S[:terms, :terms]@V[:terms, :]
 
@@ -42,14 +57,14 @@ def scale(A):
     u = A.max()
     l = A.min()
     if u == l or (u==255 and l==0): return A
-    A = ((A-l)/(u-l)*255).astype(np.uint8)
+    return ((A-l)/(u-l)*255).astype(np.uint8)
 
 class GrayscaleImageSVD:
     def __init__(self, location=None, A=None):
         self.location = location
         self.A = imread(location)
         if len(self.A.shape)!=2: raise ValueError("Image is not grayscale")
-        self.U, S, self.V = np.linalg.svd(self.A)
+        self.U, S, self.V = SVD(self.A)
         self.S = np.diag(S)
         
     def reduce(self, terms, type = np.uint8):
@@ -78,17 +93,17 @@ class ColourImageSVD:
         self.B = self.A[:, :, 2]
         
         print("SVD for Red Channel")        
-        U, S, V = np.linalg.svd(self.R)
+        U, S, V = SVD(self.R)
         S = np.diag(S)
         self.RU, self.RS, self.RV = U, S, V
         
         print("SVD for Green Channel")
-        U, S, V = np.linalg.svd(self.G)
+        U, S, V = SVD(self.G)
         S = np.diag(S)
         self.GU, self.GS, self.GV = U, S, V
         
         print("SVD for Blue Channel")
-        U, S, V = np.linalg.svd(self.B)
+        U, S, V = SVD(self.B)
         S = np.diag(S)
         self.BU, self.BS, self.BV = U, S, V
 
@@ -116,3 +131,20 @@ class ColourImageSVD:
     def save(self, loc):
         plt.imsave(loc, self.A)
 
+
+if __name__ == "__main__":
+    A = np.array(
+        [[1, 2, 3, 4],
+        [2, 4, 6, 8],
+        [5, 10, 15, 20],
+        [10, 20, 30, 40]]
+    )
+    
+    U, S, V = SVD(A)
+    
+    print(f"{U = }")
+    print(f"{S = }")
+    print(f"{V = }")
+    
+    S = np.diag(S)
+    print(U@S@V)
