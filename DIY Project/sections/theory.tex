@@ -64,6 +64,80 @@
 
 		Now, according to the theory, we need $n$ terms to express a $n\times n$ matrix. But, in practical scenario, we can get away with much less terms. This is because, as the values of $\sigma_i$ decrease, the contribution of the corresponding term to the matrix $A$ also decreases.
 
+	\subsection{SVD of rectagular matrices}
+
+		Till now we had been working with square matrices only. Now let's see how we can apply SVD to a rectangular matrix. Consider the following $n\times m$ matrix $A$:
+
+		$$A_{n\times m} = U_{n\times n}\cdot S_{n\times m}\cdot V_{m\times m}$$
+
+		Here, the $S$ matrix actually had $min(m,\;n)$ number of non-zero elements as it's diagonal elements. All other elements are 0. So, depending the values of m and n, the $S$ matrix will be of the following forms
+
+		When $m<n$:
+		$$
+		S_{n\times m}=\left(
+			\begin{matrix}
+				\sigma_{11} & 0 & \cdots & 0 \\
+				0 & \sigma_{22} & \cdots & 0 \\
+				\vdots & \vdots & \ddots & \vdots \\
+				0 & 0 & \cdots & \sigma_{mm} \\
+				0 & 0 & \cdots & 0 \\
+				\vdots & \vdots & \cdots & \vdots \\
+				0 & 0 & \cdots & 0 \\
+				% \sigma_{n1} & \cdots & \sigma_{nn}
+			\end{matrix}
+		\right)
+		$$
+
+		Here, while multiplying $S$ with $V$. We will only need the first $m$ columns of the $V$ matrix. The rest of the columns are anyway going to be multiplied by zero. So, we can discard them. Similarly, while multiplying $U$ with $S$, we will only need the first $m$ rows of the $U$ matrix. The rest of the rows are going to be multiplied by zero. So, we can discard them.
+
+		When $n<m$:
+		$$
+		S_{n\times m}=\left(
+			\begin{matrix}
+				\sigma_{11} & 0 & \cdots & 0 & 0 & \cdots & 0 \\
+				0 & \sigma_{22} & \cdots & 0 & 0 & \cdots & 0 \\
+				\vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \vdots \\
+				0 & 0 & \cdots & \sigma_{nn} & 0 & \cdots & 0 \\
+			\end{matrix}
+		\right)
+		$$
+
+		Similarly, here we can clearly see that we only need the first $n$ rows and columns of $U$ and $V$ respectively. So, we can discard the rest of the rows and columns.
+
+		So, practically, by getting rid of all the unnecessary parts, we can emperically write the following equation:
+
+		$$A_{n\times m} = U_{n\times m}\cdot S_{m\times m}\cdot V_{n\times m}$$
+
+		Now, while compression, let us use only the first $k$ rows and columns of $U$ and $V$ respectively. So, we can tweak the above equation to:
+
+		$$A_{n\times m} = U_{n\times k}\cdot S_{k\times k}\cdot V_{k\times m}\;\;\;[where\;k\leq m]$$
+
+	\subsection{Colour Images}
+		Colour images have 3 values for every pixel -- Red(R), Green(G) and Blue(B). It can be thought of as 3 grayscale images. So, we can apply SVD to each of the 3 images separately. This will give us 3 matrices each for R, G and B. We can do all the similar operations on all these 3 images and then while displaying, combine them to get the final image.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 % <!-- ## Choosing the number of terms
 % &emsp; Let us choose a **compression factor** $\alpha$ (say, where $0<\alpha<1$) before compression. Then we can keep on adding the $i^{th}$ term untill 
 

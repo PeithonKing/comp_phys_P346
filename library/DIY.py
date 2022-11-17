@@ -4,7 +4,7 @@ from matplotlib.image import imread
 import numpy.linalg as LA
 
 
-def SVD(A):
+def my_SVD(A):
     e_val, e_vec = LA.eig(A.T@A)
     print(f"{e_val = }")
     print(f"{e_vec = }")
@@ -13,7 +13,7 @@ def SVD(A):
     U = A@(e_vec/S)
     return U, S, V.T
 
-# from numpy.linalg import svd as SVD
+from numpy.linalg import svd as SVD
 
 # Defining function to show image
 def show_image(array, title = None, dpi = 100, save = False):
@@ -36,7 +36,7 @@ def comp_percent(original_shape, terms):
 
 def get_rms_error(A, A_):
     error = ((A-A_)**2).sum()
-    return ((error/(A.shape[0]*A.shape[1]))**0.5)/2.55
+    return ((error/(A.shape[0]*A.shape[1]))**0.5)/2.56
 
 def get_image(terms, U, S, V, A):
     A_ = U[:, :terms]@S[:terms, :terms]@V[:terms, :]
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         [10, 20, 30, 40]]
     )
     
-    U, S, V = SVD(A)
+    U, S, V = my_SVD(A)
     
     print(f"{U = }")
     print(f"{S = }")
