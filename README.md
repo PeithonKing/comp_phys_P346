@@ -14,7 +14,7 @@
 ## Exams and Projects
 
 - [**Midsem Exam**](midsem.ipynb)
-- [**DIY Project**](DIY.ipynb)
+- [**DIY Project**](DIY%20Project/main.pdf)
 
 ## Lab Works
 
