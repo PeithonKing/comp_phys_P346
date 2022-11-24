@@ -9,7 +9,7 @@
 3. [**Assignment 3:** Solution of Linear Equations](3.assign3_lineq.ipynb)
 4. [**Assignment 4:** Roots of nonlinear equations, polynomials and data-fitting](4.assign4_rootfit.ipynb)
 5. [**Assignment 5:** Numerical Integration](5.assign5_integ.ipynb)
-6.
+6. [**Assignment 6:** Differential Equations and eigen values](6.assign6_difqev.ipynb)
 
 ## Exams and Projects
 

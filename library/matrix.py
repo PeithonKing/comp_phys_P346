@@ -192,7 +192,7 @@ class Matrix:
         return Matrix(
             [[0]] if res == [[]] else res,
             name=f"{self.name}×{mat_2.name}",
-            precision=4
+            precision=min(self.precision, mat_2.precision)
         )
 
     def is_symmetric(self):
