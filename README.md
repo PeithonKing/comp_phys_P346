@@ -1,6 +1,6 @@
 # Computational Physics Lab (P346) Assignments
 
-(readme last updated on 11th November 2022)
+(readme last updated 25th November 2022)
 
 ## Assignments
 
