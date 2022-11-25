@@ -1,11 +1,13 @@
 try:
     from library.nonlinear_equations import solve_newton_raphson
     from library.myrandom import Random
+    from library.matrix import Matrix, ones, zeros
 except ImportError:
     from nonlinear_equations import solve_newton_raphson
     from myrandom import Random
 
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 def forward_euler(f, x, x0, y0, h=0.01):
     """Forward Euler method for solving ODEs.
@@ -178,56 +180,17 @@ def c_ode_2(
 def lag_interpol(zeta_h, zeta_l, yh, yl, y):
     return zeta_l + (zeta_h - zeta_l) * (y - yl)/(yh - yl)
 
-
-# def shooting_method(f1, f2, xf, yf, x0, y0, z1, z2, h=0.01, epsilon=1e-6):
-#     print(f"r{(xf, x0, y0, z1, h)}")
-#     x, y, z = c_ode_2(f1, f2, xf, x0, y0, z1, h)
-#     plt.plot(x, y, "r")
-#     yn = y[-1]
-#     if abs(yn - yf) > epsilon:
-#         if yn < yf:
-#             c_l = z1
-#             yl = yn
-#             print(f"b{(xf, x0, y0, z2, h)}")
-#             x, y, z = c_ode_2(f1, f2, xf, x0, y0, z2, h)
-#             plt.plot(x, y, "b--")
-#             yn = y[-1]
-#             if yn > yf:
-#                 c_h = z2
-#                 yh = yn
-#                 c = lag_interpol(c_h, c_l, yh, yl, yf)
-#                 x, y, z = c_ode_2(f1, f2, xf, x0, y0, c, h)
-#                 return x, y
-#             else:
-#                 raise ValueError("Invalid bracketing.")
-#         elif yn > yf:
-#             c_h = z1
-#             yh = yn
-#             x, y, z = c_ode_2(f1, f2, xf, x0, y0, z2, h)
-#             yn = y[-1]
-#             if yn < yf:
-#                 c_l = z2
-#                 yl = yn
-#                 c = lag_interpol(c_h, c_l, yh, yl, yf)
-#                 x, y, z = c_ode_2(f1, f2, xf, x0, y0, c, h)
-#                 return x, y
-#             else:
-#                 raise ValueError("Invalid bracketing.")
-#     else:
-#         return x, y
-
-
-def my_shooting_method(
+def shooting_method(
     f1: callable,
     f2: callable,
-    x_get: float,
-    y_get: float,
     a: float,
     alpha: float,
     b: float,
     beta: float,
     h: float = 0.01,
-    seed: float = 0.56,
+    zeta_l: float = None,
+    change: float = 1,
+    seed:float =0.56,
     epsilon: float = 1e-6
 ):
     """Solves a coupled ODE system of two equations using the shooting method.
@@ -235,23 +198,22 @@ def my_shooting_method(
     Args:
         f1 (callable): First function to be integrated.
         f2 (callable): Second function to be integrated.
-        x_get (float): Final x value.
-        y_get (float): Final y value.
         a (float): Initial x value.
         alpha (float): Initial y value.
         b (float): Initial z value.
         beta (float): Initial z value.
         h (float, optional): Step Size. Defaults to 0.01.
+        zeta_l (float, optional): Guess value of zeta. Defaults to None.
+        change (float, optional): Amount to change. Defaults to 1.
+        seed (float, optional): Seed if zeta_l not provided. Defaults to 0.56.
         epsilon (float, optional): Tollerance. Defaults to 1e-6.
 
     Returns:
         X, Y, Z: Approximate solutions to the ODE system.
     """
-    # a = 0    y(a=0) = 40 = alpha
-    # b = 10   y(b=10) = 200 = beta
-
-    random = Random(seed)
-    zeta_l = random.LCG()
+    if zeta_l is None:
+        random = Random(seed)
+        zeta_l = random.LCG()
 
     x, y, z = c_ode_2(f1, f2, b, a, alpha, zeta_l, h)
     yh = y[-1]
@@ -260,10 +222,9 @@ def my_shooting_method(
 
     diff0 = abs(yh - beta)
 
-    change = -1
     while True:
         zeta_h = zeta_l
-        zeta_l += change
+        zeta_l -= change
         # print(f"{zeta_l = }")
         x, y, z = c_ode_2(f1, f2, b, a, alpha, zeta_l, h)
         yl = y[-1]
@@ -278,8 +239,41 @@ def my_shooting_method(
 
     x, y, z = c_ode_2(f1, f2, b, a, alpha, zeta_hope, h)
     yh = y[-1]
-    return x, y, z
-    # if abs(yh - beta) < epsilon:
-    #     return x, y, z
-    # else: 
-    #     return my_shooting_method(f1, f2, x_get, y_get, a, alpha, b, beta, h, random.LCG(), epsilon)
+    # return x, y, z
+    if abs(yh - beta) < epsilon:
+        return x, y, z
+    else: 
+        return shooting_method(f1, f2, a, alpha, b, beta, h, zeta_hope, change/10, epsilon = epsilon)
+
+
+
+def heat_eq2(temp:callable, Lx:float, Nx:int, Lt:float, Nt:int, needed:int):
+    """Solves the heat equation in 1D.
+
+    Args:
+        temp (callable): Initial temperature distribution.
+        Lx (float): Length of the rod.
+        Nx (int): Number of grid points in x.
+        Lt (float): Time to solve for.
+        Nt (int): Number of time steps.
+        needed (int): Upto the number of time steps to actually calculate.
+    
+    Returns:
+        A: Approximate solution to the heat equation.
+           Where each row is a time step, and each column
+           is a point on the rod.
+    """
+    hx = Lx/Nx
+    ht = Lt/Nt
+    alpha = ht/(hx**2)
+    print(f"{alpha=}")
+
+    A = zeros((needed, Nx)).mat
+    for i in range(Nx): A[0][i] = temp(Nx, i)
+    for t in tqdm(range(1, needed)):
+        for x in range(Nx):
+            if x == 0:       A[t][x] = 0                 + (1 - 2*alpha)*A[t-1][x] + alpha*A[t-1][x+1]
+            elif x == Nx-1:  A[t][x] = alpha*A[t-1][x-1] + (1 - 2*alpha)*A[t-1][x] + 0
+            else:            A[t][x] = alpha*A[t-1][x-1] + (1 - 2*alpha)*A[t-1][x] + alpha*A[t-1][x+1]
+    
+    return A
