@@ -128,54 +128,38 @@ def rk4(f, x, x0, y0, h=0.01):
         ys.append(y0)
     return xs, ys, y0
 
-
-def c_ode_2(
-    f1: callable,
-    f2: callable,
-    x_get: float,
-    x0: float,
-    y0: float,
-    z0: float,
-    h: float = 0.01
-):
-    """Solves a coupled ODE system of two equations.
+def c_ode(funcs, var, x_get, h=0.01):
+    """Solves a coupled ODE system of n equations.
 
     Args:
-        f1 (callable): First function to be integrated.
-        f2 (callable): Second function to be integrated.
+        funcs (list[callable, ...]): Functions to be integrated.
+        var (iterable[float, ...]): Initial values of the variables.
         x_get (float): Final x value.
-        x0 (float): Initial x value.
-        y0 (float): Initial y value.
-        z0 (float): Initial z value.
         h (float, optional): Step size.. Defaults to 0.01.
 
+    Raises:
+        ValueError: If the number of functions is not 1 less than the number of variables.
+
     Returns:
-        X, Y, Z: Approximate solutions to the ODE system.
+        evol (2D list of shape (len(var), i)): Approximate solutions to the ODE system. [i is the number of iterations taken]
     """
-
-    xs, ys, zs = [x0], [y0], [z0]
-    # i = 0
-    while x0 <= x_get:
-        k1y = h * f1(x0, y0, z0)
-        k1z = h * f2(x0, y0, z0)
-
-        k2y = h * f1(x0 + h/2, y0 + k1y/2, z0 + k1z/2)
-        k2z = h * f2(x0 + h/2, y0 + k1y/2, z0 + k1z/2)
-
-        k3y = h * f1(x0 + h/2, y0 + k2y/2, z0 + k2z/2)
-        k3z = h * f2(x0 + h/2, y0 + k2y/2, z0 + k2z/2)
-
-        k4y = h * f1(x0 + h, y0 + k3y, z0 + k3z)
-        k4z = h * f2(x0 + h, y0 + k3y, z0 + k3z)
-
-        x0 = x0+h
-        y0 += (1/6)*(k1y+2*k2y+2*k3y+k4y)
-        z0 += (1/6)*(k1z+2*k2z+2*k3z+k4z)
-        xs.append(x0)
-        ys.append(y0)
-        zs.append(z0)
-
-    return xs, ys, zs
+    if len(funcs) + 1 != len(var):
+        raise ValueError(f"Number of functions must be one less than number of variables. FYI: ({len(funcs) = }) + 1 = {len(funcs)+1} != ({len(var) = })")
+    evol = [[var_i] for var_i in var]
+    k = [[None for _ in range(len(funcs))] for __ in range(4)]
+    count = 0
+    while var[0] <= x_get:
+        count += 1
+        k[0] = [h * funcs[i](*var) for i in range(len(funcs))]
+        k[1] = [h * funcs[i](var[0] + h/2, *(var[j] + k[0][j-1]/2 for j in range(1, len(var)))) for i in range(len(funcs))]
+        k[2] = [h * funcs[i](var[0] + h/2, *(var[j] + k[1][j-1]/2 for j in range(1, len(var)))) for i in range(len(funcs))]
+        k[3] = [h * funcs[i](var[0] + h, *(var[j] + k[2][j-1] for j in range(1, len(var)))) for i in range(len(funcs))]
+        var[0] += h
+        evol[0].append(var[0])
+        for i in range(1, len(var)):
+            var[i] += (1/6)*(k[0][i-1]+2*k[1][i-1]+2*k[2][i-1]+k[3][i-1])
+            evol[i].append(var[i])
+    return evol
 
 def lag_interpol(zeta_h, zeta_l, yh, yl, y):
     return zeta_l + (zeta_h - zeta_l) * (y - yl)/(yh - yl)
@@ -215,7 +199,7 @@ def shooting_method(
         random = Random(seed)
         zeta_l = random.LCG()
 
-    x, y, z = c_ode_2(f1, f2, b, a, alpha, zeta_l, h)
+    x, y, z = c_ode([f1, f2], [a, alpha, zeta_l], b, h)
     yh = y[-1]
     if abs(yh - beta) < epsilon: return x, y, z
     sign0 = yh > beta  # True if yn > beta, False if yn < beta
@@ -226,7 +210,7 @@ def shooting_method(
         zeta_h = zeta_l
         zeta_l -= change
         # print(f"{zeta_l = }")
-        x, y, z = c_ode_2(f1, f2, b, a, alpha, zeta_l, h)
+        x, y, z = c_ode([f1, f2], [a, alpha, zeta_l], b, h)
         yl = y[-1]
         if abs(yl - beta) < epsilon:
             return x, y, z
@@ -237,7 +221,7 @@ def shooting_method(
 
     zeta_hope = lag_interpol(zeta_h, zeta_l, yh, yl, beta)
 
-    x, y, z = c_ode_2(f1, f2, b, a, alpha, zeta_hope, h)
+    x, y, z = c_ode([f1, f2], [a, alpha, zeta_hope], b, h)
     yh = y[-1]
     # return x, y, z
     if abs(yh - beta) < epsilon:

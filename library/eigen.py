@@ -4,6 +4,16 @@ import math
 
 
 def get_eigen(A:Matrix, epsilon:float = 1e-6, seed:float = 0.1):
+    """Get the principal eigenvalue and eigenvectors of a matrix using the power method.
+
+    Args:
+        A (Matrix): Matrix to be analyzed.
+        epsilon (float, optional): Tolerance. Defaults to 1e-6.
+        seed (float, optional): Initial guess. Defaults to 0.1.
+
+    Returns:
+        eigenvalue, eigenvector, iterations: Principal eigenvalue and eigenvector, and number of iterations.
+    """
     precision = int(-math.log10(epsilon))
     x0 = randmat((3, 1), name="x0", precision=precision, seed=seed)
     
