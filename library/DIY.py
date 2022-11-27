@@ -3,15 +3,14 @@ import numpy as np
 from matplotlib.image import imread
 import numpy.linalg as LA
 
-
-def my_SVD(A):
-    e_val, e_vec = LA.eig(A.T@A)
-    print(f"{e_val = }")
-    print(f"{e_vec = }")
-    V = e_vec
-    S = (e_val*e_val)**0.25
-    U = A@(e_vec/S)
-    return U, S, V.T
+# def my_SVD(A):
+#     e_val, e_vec = LA.eig(A.T@A)
+#     print(f"{e_val = }")
+#     print(f"{e_vec = }")
+#     V = e_vec
+#     S = (e_val*e_val)**0.25
+#     U = A@(e_vec/S)
+#     return U, S, V.T
 
 from numpy.linalg import svd as SVD
 
@@ -118,9 +117,7 @@ class ColourImageSVD:
         B_ = scale(self.BU[:, :terms]@self.BS[:terms, :terms]@self.BV[:terms, :]).astype(np.uint8)
         errorB = get_rms_error(self.B, B_)
 
-        error = (errorR+errorG+errorB)/3
-        
-        return np.dstack((R_, G_, B_)).astype(type), ratio, error
+        return np.dstack((R_, G_, B_)).astype(type), ratio, [errorR, errorG, errorB]
     
     def display(self, title=None, dpi=100):
         plt.figure(dpi = dpi, figsize = (0.3*self.A.shape[1]/dpi, 0.3*self.A.shape[0]/dpi))
