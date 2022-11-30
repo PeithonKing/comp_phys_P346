@@ -9,7 +9,7 @@ except ImportError:
 
 
 def differentiate(f, x, epsilon = 1e-6):  # Numerical differentiation
-	return (f(x+epsilon)-f(x))/epsilon
+    return (f(x+epsilon)-f(x))/epsilon
 
 def P(x, coeff):  # Polynomial
     return sum([c*x**(len(coeff)-i-1) for i, c in enumerate(coeff)])
