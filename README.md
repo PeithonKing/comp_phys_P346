@@ -1,6 +1,6 @@
 # Computational Physics Lab (P346) Assignments
 
-(readme last updated 25th November 2022)
+(readme last updated 30th November 2022)
 
 ## Assignments
 
@@ -15,6 +15,7 @@
 
 - [**Midsem Exam**](midsem.ipynb)
 - [**DIY Project**](DIY%20Project/main.pdf)
+- [**Endem Exam**](endsem.ipynb)
 
 ## Lab Works
 
