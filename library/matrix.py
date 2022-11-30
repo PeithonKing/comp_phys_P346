@@ -328,6 +328,7 @@ class Matrix:
                 return Matrix([[self.mat[i][j]*__o.mat[0][j] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
             if __o.shape[1] == 1 and __o.shape[0] == self.shape[0]:  # column matrix
                 return Matrix([[self.mat[i][j]*__o.mat[i][0] for j in range(self.shape[1])] for i in range(self.shape[0])], self.name, self.precision)
+            raise ValueError(f"Matrices cannot be scalar multiplied with shape {self.shape} and {__o.shape}.")
         elif isinstance(__o, (int, float)):
             return Matrix(
                 [

@@ -15,7 +15,7 @@ def get_eigen(A:Matrix, epsilon:float = 1e-6, seed:float = 0.1):
         eigenvalue, eigenvector, iterations: Principal eigenvalue and eigenvector, and number of iterations.
     """
     precision = int(-math.log10(epsilon))
-    x0 = randmat((3, 1), name="x0", precision=precision, seed=seed)
+    x0 = randmat((len(A), 1), name="x0", precision=precision, seed=seed)
     
     z = x0
     i = 0

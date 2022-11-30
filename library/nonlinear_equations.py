@@ -19,7 +19,7 @@ def dP(coeff):  # derivative of polynomial
     dcoeff = [coeff[i] * i for i in range(len(coeff))]
     return dcoeff[-1:0:-1]
 
-def get_brackets(f, guess = None, alpha=0.1, seed=0.1):
+def get_brackets(f, guess = None, alpha=0.1, seed=0.2):
     # print(guess)
     r = Random(seed, [-5, 5])
     if not guess: guess = [r.LCG(), r.LCG()]
@@ -37,7 +37,7 @@ def get_brackets(f, guess = None, alpha=0.1, seed=0.1):
         guess = [r.LCG(), r.LCG()]
     return get_brackets(f, [a, b], seed = r.LCG())
 
-def solve_bisection(f, guess = None, epsilon = 1e-10, delta=1e-4, rec_depth=0, verbose=False):
+def solve_bisection(f, guess = None, epsilon = 1e-4, delta=1e-4, rec_depth=0, verbose=False):
     a, b = get_brackets(f, guess)
     c = (a+b)/2
     if f(a)*f(c) > 0:
@@ -52,7 +52,7 @@ def solve_bisection(f, guess = None, epsilon = 1e-10, delta=1e-4, rec_depth=0, v
         print(f"step={rec_depth+1}\t  x={truncate_p(x_p, places, str)}\tf(x)={truncate_p(f(x_p), places, str)}")
     return truncate_p([a, b][abs(f(a))>abs(f(b))], places, str) if (abs(a-b) < epsilon or abs(f(a))<delta or abs(f(b))<delta) else solve_bisection(f, [a, b], epsilon, delta, rec_depth+1, verbose)
 
-def solve_regula_falsi(f, guess = None, delta=1e-2, rec_depth = 0, verbose = False):
+def solve_regula_falsi(f, guess = None, delta=1e-4, rec_depth = 0, verbose = False):
     a, b = get_brackets(f, guess)
     c = a + (b-a)*abs(f(a))/(abs(f(a))+abs(f(b)))
     if f(a)*f(c) > 0: a = c

@@ -1,0 +1,20 @@
+\section{Steps to Calculate SVD}
+
+	Calculating SVD of a matrix involves finding the eigenvalues and eigenvectors of the matrix. The \textbf{pseudocode} is as follows:
+
+\vspace{5mm}
+
+\noindent function SVD(A)\{
+	\vspace{-3mm}
+	\begin{enumerate}
+		\item if A is not a square matrix, add sufficient zeros as rows or columns to make it a square matrix
+		\item Find eigenvalues of $A^TA$.
+		\item $S = (\sqrt{\lambda_i}\;|\;lambda_i \in eigenvalues$)
+		\item Add zeros to $S$ to make it a square, diagonal matrix.
+		\item V = eigenvectors of $A^TA$
+		\item U = eigenvectors of $AA^T$
+		\item return $U$, $S$, $V^T$
+	\end{enumerate}
+
+	\vspace{-3mm}
+\noindent \}

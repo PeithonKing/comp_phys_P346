@@ -72,8 +72,7 @@ class Random:
         points = [[0]*dimension]
 
         d = range(steps)
-        if plot:
-            d = tqdm(d)
+        if plot: d = tqdm(d)
 
         for i in d:
             point = [points[-1][i] + 2*self.LCG() - 1 for i in range(dimension)]
@@ -100,5 +99,3 @@ class Random:
 # if __name__ == "__main__":
 #     from tqdm import tqdm
 #     from basic_arithmatic import distance
-    
-    

@@ -138,3 +138,12 @@ class Complex:
         if a == f"{self.name} = ":
             return f"{self.name} = 0 + 0i"
         return a
+    
+    def __add__(self, other):
+        return self.add(other)
+    
+    def __mul__(self, other):
+        return self.multiply(other)
+    
+    def __abs__(self):
+        return self.mod()
