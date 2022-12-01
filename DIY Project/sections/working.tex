@@ -4,7 +4,7 @@
 
 		We will first try our hands upon a grayscale images. Grayscale images are images in which every pixel has a single brightness value. So it is easier to work with.
 		
-		After Importing all the classes and functions\footnote{All the relevant functions and classes have been kept in: \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py}{\textbf{the Library File}}} from the library file, we can make an instance of the \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L62-L84}{\texttt{GrayscaleImageSVD()}} class. This class takes the location of the image as an input. When the instance is constructed, it loads the image to it's memory as a numpy array. Then it callculates the U, S and V matrices using the \href{https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html}{\texttt{numpy.linalg.svd()}} function from the \href{https://numpy.org/}{\textbf{NumPy}} library.
+		After Importing all the classes and functions\footnote{All the relevant functions and classes have been kept in: \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py}{\textbf{the Library File}}} from the library file, we can make an instance of the \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L50-L72}{\texttt{GrayscaleImageSVD()}} class. This class takes the location of the image as an input. When the instance is constructed, it loads the image to it's memory as a numpy array. Then it callculates the U, S and V matrices using the \href{https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html}{\texttt{numpy.linalg.svd()}} function from the \href{https://numpy.org/}{\textbf{NumPy}} library.
 		\vspace{-2mm}
 
 		\begin{center}
@@ -28,7 +28,7 @@
 			\label{fig:g_monkey_orig}
 		\end{figure}
 
-		Next, we can call the \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L70-L75}{\texttt{GrayscaleImageSVD.reduce()}} method to get the reduced image. This function takes the number of singular values to be used as an input. It then uses the first $n$ singular values to reconstruct the image. The function returns the reconstructed image as a numpy array. We can then use the \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L19-L31}{\texttt{show\_image()}} function to display the image. Note that, the returned array is not smaller in size than the original image; it is a full sized image. But this array can be constructed using arrays of much smaller sizes.
+		Next, we can call the \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L58-L63}{\texttt{GrayscaleImageSVD.reduce()}} method to get the reduced image. This function takes the number of singular values to be used as an input. It then uses the first $n$ singular values to reconstruct the image. The function returns the reconstructed image as a numpy array. We can then use the \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L7-L19}{\texttt{show\_image()}} function to display the image. Note that, the returned array is not smaller in size than the original image; it is a full sized image. But this array can be constructed using arrays of much smaller sizes.
 
 		Although we have writen our own \texttt{SVD()} function \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/DIY%20Project/trying_SVD.ipynb}{(demonstration \textbf{here})}, we won't be actually using that for this project.
 
@@ -72,7 +72,7 @@
 			\end{itemize}
 
 	\subsection{Grayscale Rectangular Images}
-		The \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L62-L84}{\texttt{GrayscaleImageSVD()}}  function is a generalised one. It works on both square and rectangular grayscale images. Let's see how it looks on a rectangular image.
+		The \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L50-L72}{\texttt{GrayscaleImageSVD()}}  function is a generalised one. It works on both square and rectangular grayscale images. Let's see how it looks on a rectangular image.
 
 		The original lion image can be found \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/static/lion.jpg}{\textbf{here}}.
 
@@ -87,7 +87,7 @@
 
 	\subsection{Color Images}
 
-		Colour images consist of 3 channels of data: Red, Green and Blue. So, for colour images we need to perform SVD on each channel separately. The \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L86-L133}{\texttt{ColourImageSVD()}} class does exactly that. Let's see how it looks on a color image.
+		Colour images consist of 3 channels of data: Red, Green and Blue. So, for colour images we need to perform SVD on each channel separately. The \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L74-L119}{\texttt{ColourImageSVD()}} class does exactly that. Let's see how it looks on a color image.
 
 		\begin{lstlisting}[language=Python, caption={Working with colour images}, label={lst:c_crab_10}]
 		import library.DIY as DIY

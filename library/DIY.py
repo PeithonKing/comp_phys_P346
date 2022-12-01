@@ -1,17 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.image import imread
-import numpy.linalg as LA
-
-# def my_SVD(A):
-#     e_val, e_vec = LA.eig(A.T@A)
-#     print(f"{e_val = }")
-#     print(f"{e_vec = }")
-#     V = e_vec
-#     S = (e_val*e_val)**0.25
-#     U = A@(e_vec/S)
-#     return U, S, V.T
-
 from numpy.linalg import svd as SVD
 
 # Defining function to show image
