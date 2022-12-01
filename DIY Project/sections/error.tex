@@ -11,18 +11,18 @@
 		
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.4\textwidth]{../static/error_graph_grayscale.png}
+		\includegraphics[width=0.5\textwidth]{../static/error_graph_grayscale.png}
 		\caption{number of terms taken vs \% RMS error for the grayscale monkey image}
 		\label{graph:grayscale_error}
 	\end{figure}
 
-	We have written a \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L37-L39}{\texttt{get\_rms\_error()}} function for calculating the percentage RMS error. It takes the original matrix and the reconstructed matrix as input and returns the percentage RMS error.
+	We have written a \href{https://github.com/PeithonKing/comp_phys_P346/blob/main/library/DIY.py#L25-L28}{\texttt{get\_rms\_error()}} function for calculating the percentage RMS error. It takes the original matrix and the reconstructed matrix as input and returns the percentage RMS error.
 
-	We have created a graph for the percentage RMS error vs the number of singular values (terms) used. The graph for the grayscale monkey image is shown in \hyperref[graph:grayscale_error]{\textbf{Figure 5}} and for the color monkey image is shown in \hyperref[graph:color_error]{\textbf{Figure 6}}.
+	We have created a graph for the percentage RMS error vs the number of singular values (terms) used. The graph for the grayscale monkey image is shown in \hyperref[graph:grayscale_error]{\textbf{Figure 5}} and for the color monkey image is shown in \hyperref[graph:colour_error]{\textbf{Figure 6}}.
 		
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.4\textwidth]{../static/error_graph_colour.png}
+		\includegraphics[width=0.5\textwidth]{../static/error_graph_colour.png}
 		\caption{number of terms taken vs \% RMS error for the colour crab image}
 		\label{graph:colour_error}
 	\end{figure}
