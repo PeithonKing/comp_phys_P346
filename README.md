@@ -15,7 +15,7 @@
 
 - [**Midsem Exam**](midsem.ipynb)
 - [**DIY Project**](DIY%20Project/main.pdf)
-- [**Endem Exam**](endsem.ipynb)
+- [**Endsem Exam**](endsem.ipynb)
 
 ## Lab Works
 
